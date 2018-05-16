@@ -28,6 +28,10 @@
 		width: 100%;
 		z-index: _misc(z-index-base);
 
+		.logo-sub {
+			color: _palette(fg);
+		}
+
 		.logo {
 			border: 0;
 			display: inline-block;
@@ -41,8 +45,8 @@
 					'background-color #{_duration(transition)} ease-in-out',
 					'color #{_duration(transition)} ease-in-out'
 				));
-				background-color: _palette(fg-bold);
-				color: _palette(bg);
+				background-color: _palette(bg-logo);
+				color: _palette(fg-logo);
 				display: inline-block;
 				line-height: 1.65em;
 				margin-right: 0.325em;

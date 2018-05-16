@@ -18,10 +18,12 @@
             <header class="major">
                 <h1>{{ page.landing-title }}</h1>
             </header>
-            <div class="content">
-                <p style="text-transform: uppercase;">{{ site.description }}</p>
+            <div class="inner">
+                <p>{{ content }}</p>
                 <ul class="actions">
-                    <li><a href="#one" class="button next scrolly">Get Started</a></li>
+                    <li><a href="assets/ResumeFedericoSaldarini2017.pdf" class="button">Resume</a></li>
+                    <!-- <li><a href="{{ site.linkedin_url }}" class="icon alt fa-linkedin" target="_blank"><span class="label">LinkedIn</span></a></li>
+                    <li><a href="{{ site.github_url }}" class="icon alt fa-github" target="_blank"><span class="label">GitHub</span></a></li> -->
                 </ul>
             </div>
         </div>
@@ -29,23 +31,8 @@
 
     <!-- Main -->
     <div id="main">
-
         <!-- One -->
         {% include tiles.html %}
-
-        <!-- Two -->
-        <section id="two">
-            <div class="inner">
-                <header class="major">
-                    <h2>Massa libero</h2>
-                </header>
-                <p>{{ content }}</p>
-                <ul class="actions">
-                    <li><a href="landing.html" class="button next">Get Started</a></li>
-                </ul>
-            </div>
-        </section>
-
     </div>
 
     {% include footer.html %}

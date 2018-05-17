@@ -66,7 +66,6 @@ module Jekyll
         dest_path = File.join(dest_directory, "#{@file_name}.svg")
         FileUtils.mkdir_p dest_directory
 
-
         # if the file doesn't exist or the tikz code is not the same with the file, then compile the file
 
         if !File.exist?(tex_path) or !tikz_same?(tex_path, tikz_code) or !File.exist?(dest_path)
@@ -75,8 +74,9 @@ module Jekyll
           system("pdf2svg #{pdf_path} #{dest_path}")
         end
 
+        # FEDE_CHANGE
         web_dest_path = File.join("/assets/images", File.basename(context["page"]["url"], ".*"), "#{@file_name}.svg")
-        "<embed src=\"#{web_dest_path}\" type=\"image/svg+xml\" />"
+        "<embed class=\"tikz\" src=\"#{web_dest_path}\" type=\"image/svg+xml\" />"
       end
 
       private

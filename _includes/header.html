@@ -2,10 +2,10 @@
 <div id="wrapper">
 
 <!-- Header -->
-<header id="header"{% if page.layout == "landing" %} class="alt style2"{% endif %}{% if page.layout == "home" %} class="alt"{% endif %}>
+<header id="header" {% if page.layout == "home" %} class="alt" {% elsif page.layout == "post"%} class="post" {% endif %}>
 	<a href="{{ "" | absolute_url }}/" class="logo"><strong>{{ site.title }}</strong> <span class="logo-sub">{{ site.subtitle }}</span></a>
 	<nav>
-		<a href="#menu">Menu</a>
+		<a class="logo-sub" href="#menu">Menu</a>
 	</nav>
 </header>
 

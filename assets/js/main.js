@@ -4,8 +4,19 @@
 	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
 */
 
-(function($) {
+// FEDE_CHANGE
+// // $('.caption').each(function() {
+// // 		$(this).replaceWith($('<figure class="img-with-caption">' + this.innerHTML + '</figure>'));
+// // });
+// // $('.caption').children('img').each(function() {
+// // 		var caption;
+// // 		caption = $(this).attr('title');
+// // 		$(this).before('<figcaption>' + caption + '</figcaption>');
+// });
 
+
+
+(function($) {
 	skel.breakpoints({
 		xlarge: '(max-width: 1680px)',
 		large: '(max-width: 1280px)',

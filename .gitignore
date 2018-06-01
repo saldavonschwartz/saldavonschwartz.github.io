@@ -4,4 +4,4 @@ _site/
 Gemfile.lock
 *.gem
 .DS_Store
-_tikz_tmp
+_latex_tmp

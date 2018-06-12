@@ -1,4 +1,4 @@
-{% latex roi, "<strong>Figure 4.</strong> Extracting ROIs (regions of interest) from a camera image. Each ROI is then normalized (Figure 3)."  %}
+{% latex roi, "<strong>Figure 6.</strong> Extracting ROIs (regions of interest) from a camera image. Each ROI is then normalized (Figure 3)."  %}
 \documentclass[tikz, border=0pt]{standalone}
 \usetikzlibrary{shapes,arrows, calc}
 

@@ -1,4 +1,4 @@
-{% latex normalization, "<strong>Figure 3.</strong> Normalizing an arbitrary digit before prediction."  %}
+{% latex normalization, "<strong>Figure 5.</strong> Normalizing an arbitrary digit before prediction."  %}
 \documentclass[tikz, border=0pt]{standalone}
 \usetikzlibrary{shapes,arrows, calc}
 

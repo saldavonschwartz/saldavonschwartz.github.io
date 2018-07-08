@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<!--
+	Forty by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+
+<head>
+	<title>0XFEDE</title>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+	<!--[if lte IE 8]><script src="/assets/js/ie/html5shiv.js"></script><![endif]-->
+	<link rel="stylesheet" href="/assets/css/main.css" />
+	<!--[if lte IE 9]><link rel="stylesheet" href="/assets/css/ie9.css" /><![endif]-->
+	<!--[if lte IE 8]><link rel="stylesheet" href="/assets/css/ie8.css" /><![endif]-->
+</head>
+
+
+<body>
+
+    <!-- Wrapper -->
+<div id="wrapper">
+
+<!-- Header -->
+<header id="header"  class="post" >
+	<a href="/" class="logo"><strong>0XFEDE</strong> <span class="logo-sub">Federico Saldarini</span></a>
+	<nav>
+		<a class="logo-sub" href="#menu">Menu</a>
+	</nav>
+</header>
+
+<!-- Menu -->
+<nav id="menu">
+	<ul class="links">
+        
+		    
+		
+		    
+		
+		    
+		
+		    
+		        <li><a href="/">Home</a></li>
+	    	
+		
+		    
+		
+		    
+		
+		
+		    
+		        <li><a href="/all_posts.html">All posts</a></li>
+		    
+		
+		    
+		        <li><a href="/elements.html">Elements</a></li>
+		    
+		
+		    
+		        <li><a href="/generic.html">Generic</a></li>
+		    
+		
+		    
+		
+		    
+		        <li><a href="/landing.html">Landing</a></li>
+		    
+		
+		    
+		
+	</ul>
+	<ul class="actions vertical">
+		<li><a href="#" class="button special fit">Get Started</a></li>
+		<li><a href="#" class="button fit">Log In</a></li>
+	</ul>
+</nav>
+
+
+
+<!-- Main -->
+<div id="main" class="alt">
+
+<!-- One -->
+<section id="one">
+	<div class="inner">
+		<header class="major">
+      <h1>GPUKit</h1>
+      <h3>A C++ framework for OpenGL rendering</h3>
+      <h5><a href=https://github.com/saldavonschwartz/GPUKit class="button">github project</a></h5>
+		</header>
+    <!--  -->
+		<p><!-- Links: -->
+
+<ul>
+  <li><strong><a href="#1">About</a></strong></li>
+  <li><strong><a href="#2">Example Shader Program</a></strong></li>
+</ul>
+
+<h3 id="about"><a class="toc_item" name="1"></a>About:</h3>
+
+<p>GPUKit is a C++ framework for rendering with OpenGL in an object-oriented way. The framework exposes the following GL constructs thru a C++ interface:</p>
+
+<ul>
+  <li>vertex, geometry and fragment shaders.</li>
+  <li>programs.</li>
+  <li>buffers (FBO).</li>
+  <li>2D and 3D (Cubemap) textures.</li>
+  <li>geometry (VAO + VBO + EBO).</li>
+</ul>
+
+<p>Additionally, GPUKit implements the following convenience classes:</p>
+
+<ul>
+  <li><code class="highlighter-rouge">Material</code>: A proxy between programs and per-instance uniform values, allowing multiple materials to share a common program.</li>
+  <li><code class="highlighter-rouge">Pass</code>: a way to organize the rendering code associated with a program and buffer combination.</li>
+  <li><code class="highlighter-rouge">AssetImporter</code>: allows importing shaders, 3D geometry and textures and automatically obtaining C++ objects from these.</li>
+</ul>
+
+<p>The project includes an example implementation of a rendering pipeline consisting of:</p>
+<ul>
+  <li>deferred shading.</li>
+  <li>skybox.</li>
+  <li>dynamic point shadows.</li>
+  <li>bloom.</li>
+  <li>rudimentary rigid-body animation.</li>
+</ul>
+
+<!-- types:
+1:  local images.
+2: url to video.
+3: local mp4
+-->
+
+<table>
+  <tr>
+    
+    
+    <td style="border: none; width: 100%;">
+    <figure>
+        
+        <iframe width="560" height="315" src="https://www.youtube.com/embed/e51OzLoGSWc" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen=""></iframe>
+        
+        
+        <figcaption><strong>Video 1.</strong> Demo scene rendered with GPUKit, included in the project.</figcaption>
+        
+    </figure>
+    </td>
+    
+  </tr>
+</table>
+
+<h3 id="example-shader-program"><a class="toc_item" name="2"></a>Example Shader Program:</h3>
+
+<p>Creating a vertex + fragment program involves two steps:</p>
+
+<ol>
+  <li>Implement the shaders in a single file annotated with GPUKit commands (Code 1).</li>
+</ol>
+
+<div class="language-glsl highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#GPUKIT_VERTEX_STAGE
+#version 410 core
+#pragma debug(on)
+</span>
+<span class="c1">// your uniforms, ins and outs...</span>
+
+<span class="kt">void</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+  <span class="c1">// your vertex code...</span>
+<span class="p">}</span>
+<span class="cp">#GPUKIT_END_STAGE
+</span>
+<span class="cp">#GPUKIT_FRAGMENT_STAGE
+#GPUKIT_ENABLE depth
+#version 410 core
+#pragma debug(on)
+</span>
+<span class="c1">// your uniforms, ins and outs...</span>
+
+<span class="kt">void</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+  <span class="c1">// your fragment code...</span>
+<span class="p">}</span>
+<span class="cp">#GPUKIT_END_STAGE
+</span></code></pre></div></div>
+<figcaption><strong>Code 1:</strong> A glsl file with both vertex and fragment shader code.</figcaption>
+
+<ol>
+  <li>Importing the program via the framework’s <code class="highlighter-rouge">AssetImporter</code> and linking it (Code 2).</li>
+</ol>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">Program</span><span class="o">*</span> <span class="n">program</span> <span class="o">=</span> <span class="n">AssetImporter</span><span class="o">&lt;</span><span class="n">Program</span><span class="o">*&gt;::</span><span class="n">import</span><span class="p">(</span><span class="s">"example.glsl"</span><span class="p">);</span>
+<span class="n">program</span><span class="o">-&gt;</span><span class="n">link</span><span class="p">();</span>
+</code></pre></div></div>
+<figcaption><strong>Code 2:</strong> Importing and linking a GPUKit program.</figcaption>
+
+<p>The framework automatically maps uniform locations and pre-sets texture-unit indices. After linking,
+setting attributes of a program in C++ is straightforward (Code 3).</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">program</span><span class="o">-&gt;</span><span class="n">setUniform</span><span class="o">&lt;</span><span class="n">vec3</span><span class="o">&gt;</span><span class="p">(</span><span class="s">"uniform name"</span><span class="p">,</span> <span class="p">{</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">1.</span> <span class="p">});</span>
+<span class="n">program</span><span class="o">-&gt;</span><span class="n">commit</span><span class="p">();</span>
+</code></pre></div></div>
+<figcaption><strong>Code 3:</strong> Setting a uniform value.</figcaption>
+
+<p>Materials work in a similar way. Any attributes declared as <code class="highlighter-rouge">Material</code> structs in glsl files are automatically picked up by GPUKit and the <code class="highlighter-rouge">Material</code> class proxies their values to the corresponding <code class="highlighter-rouge">Program</code> object, allowing many materials to reference a single program.</p>
+
+<p>For an example on how the rest of the framework’s classes work take a look at the repo.</p>
+</p>
+	</div>
+</section>
+
+</div>
+
+    <!-- Footer -->
+	<footer id="footer">
+		<div class="inner">
+			<ul class="icons">
+				
+				
+				
+				
+				
+				
+				
+				
+				<li><a href="https://github.com/saldavonschwartz" class="icon alt fa-github" target="_blank"><span class="label">GitHub</span></a></li>
+				
+				
+				
+				<li><a href="https://www.linkedin.com/in/federicosaldarini" class="icon alt fa-linkedin" target="_blank"><span class="label">LinkedIn</span></a></li>
+				
+			</ul>
+			<ul class="copyright">
+				<li>&copy; 2018 Federico Saldarini. All rights reserved.</li>
+				<li>Based on Forty theme by <a href="https://html5up.net" target="_blank">HTML5 UP</a></li>
+			</ul>
+		</div>
+	</footer>
+
+</div>
+
+<!-- Scripts -->
+	<script src="/assets/js/jquery.min.js"></script>
+	<script src="/assets/js/jquery.scrolly.min.js"></script>
+	<script src="/assets/js/jquery.scrollex.min.js"></script>
+	<script src="/assets/js/skel.min.js"></script>
+	<script src="/assets/js/util.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
+	<!--[if lte IE 8]><script src="/assets/js/ie/respond.min.js"></script><![endif]-->
+	<script src="/assets/js/main.js"></script>
+
+
+</body>
+
+</html>

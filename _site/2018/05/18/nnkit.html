@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<!--
+	Forty by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+
+<head>
+	<title>0XFEDE</title>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+	<!--[if lte IE 8]><script src="/assets/js/ie/html5shiv.js"></script><![endif]-->
+	<link rel="stylesheet" href="/assets/css/main.css" />
+	<!--[if lte IE 9]><link rel="stylesheet" href="/assets/css/ie9.css" /><![endif]-->
+	<!--[if lte IE 8]><link rel="stylesheet" href="/assets/css/ie8.css" /><![endif]-->
+</head>
+
+
+<body>
+
+    <!-- Wrapper -->
+<div id="wrapper">
+
+<!-- Header -->
+<header id="header"  class="post" >
+	<a href="/" class="logo"><strong>0XFEDE</strong> <span class="logo-sub">Federico Saldarini</span></a>
+	<!-- <nav>
+		<a class="logo-sub" href="#menu">Menu</a>
+	</nav> -->
+</header>
+
+<!-- Menu -->
+<!-- <nav id="menu">
+	<ul class="links">
+        
+		    
+		        <li><a href="/">Home</a></li>
+	    	
+		
+		    
+		
+		
+		    
+		
+		    
+		
+	</ul>
+	<ul class="actions vertical">
+		<li><a href="#" class="button special fit">Get Started</a></li>
+		<li><a href="#" class="button fit">Log In</a></li>
+	</ul>
+</nav> -->
+
+
+
+<!-- Main -->
+<div id="main" class="alt">
+
+<!-- One -->
+<section id="one">
+	<div class="inner">
+		<header class="major">
+      <h1>NNKit</h1>
+      <h3>A Python framework for creating dynamic neural networks</h3>
+      <h5><a href=https://github.com/saldavonschwartz/nnkit class="button">github project</a></h5>
+		</header>
+    <!--  -->
+		<p><!-- Links: -->
+
+<ul>
+  <li><strong><a href="#1">About</a></strong></li>
+  <li><strong><a href="#2">Computation Graphs</a></strong></li>
+  <li><strong><a href="#3">Variables, Operators and Implicit Dynamic Graphs</a></strong></li>
+  <li><strong><a href="#4">Forward and Backward Passes</a></strong></li>
+  <li><strong><a href="#5">Optimizers</a></strong></li>
+  <li><strong><a href="#6">Practical Examples</a></strong></li>
+</ul>
+
+<h3 id="about"><a class="toc_item" name="1"></a>About:</h3>
+
+<p>NNKit is an extensible framework for building and training neural networks. It provides a collection of nodes to implement dynamic net topologies as well as optimizers to train these networks and a few other helper algorithms for things such as mini batch partitioning.</p>
+
+<p>The motivation for creating my own framework as opposed to using an existing one like PyTorch or Tensorflow was to study neural networks from the ground up, both from a theoretical and practical perspective.</p>
+
+<h3 id="computation-graphs"><a class="toc_item" name="2"></a>Computation Graphs:</h3>
+
+<p>NNKit is based around the concept of computation graphs. A computation graph is a general way of describing an arbitrary computation or function as a composition of individual operations.</p>
+
+<p>For example, Figure 1 shows a hypothetical 3-class classifier as a neural network. The network has a 3-3 topology, meaning 2 layers (excluding inputs) and 3 units per layer. As is customary in neural net diagrams, each unit or ‘neuron’ is assumed to perform a weighted linear combination followed by a nonlinear transformation (i.e.: the activation function). In this example the first layer uses ReLU activations and the second uses Softmax, so outputs of the network can be interpreted as the probability that an input maps to one of three classes. Each layer also has a dummy constant input of 1 to add a <em>bias</em> term into each layer’s linear combination.</p>
+
+<table>
+          <tr>
+            <td style="border: none; ">
+            <figure>
+                <img src="/assets/images/nnkit/nn.svg" alt="" />
+                <figcaption><strong>
+  Figure 1.</strong> 
+  3-class, 3-3 classifier neural net. Superscripts = layer index, subscripts = units.
+  Constant dummy nodes are inserted to multiply the bias terms
+</figcaption>
+            </figure>
+            </td>
+          </tr>
+        </table>
+
+<p>In NNKit, the same classifier would instead be described as a vectorized computation graph (Figure 2). This representation has two main differences with the one in Figure 1:</p>
+
+<ul>
+  <li>
+    <p>The neuron computation is broken down into its constituent operations: multiplication, addition of bias and nonlinear activation. This means a layer is made up of a sequence of operations. A general computation graph would also decompose activations into primitive operations but I chose to implement these as atomic operations.</p>
+  </li>
+  <li>
+    <p>There are no individual neurons nor explicit layers. Instead, there are variables and operations and combinations of these allow thinking of blocks of computation as implicit layers with <em>shapes</em> such as 2-in to 3-out. In terms of implementation, computations equivalent to those of multiple neurons in a layer are then packed into tensors and carried out in parallel.</p>
+  </li>
+</ul>
+
+<table>
+          <tr>
+            <td style="border: none; ">
+            <figure>
+                <img src="/assets/images/nnkit/graph.svg" alt="" />
+                <figcaption><strong>
+  Figure 2.</strong> 
+  3-class, 3-3 classifier computation graph. Superscripts = (implicit) layers. Subscripts = variable dimensions.
+</figcaption>
+            </figure>
+            </td>
+          </tr>
+        </table>
+
+<h3 id="variables-operators-and-implicit-dynamic-graphs"><a class="toc_item" name="3"></a>Variables, Operators and Implicit Dynamic Graphs:</h3>
+
+<p>NNKit graphs are made up of two types of nodes: <strong>variables</strong> (<code class="highlighter-rouge">NetVar</code> class) and <strong>operators</strong> (<code class="highlighter-rouge">NetOp</code> class).</p>
+
+<ul>
+  <li>
+    <p><strong>variables</strong> hold a value in their <code class="highlighter-rouge">data</code> property and this value can be arbitrarily set. They also have a <code class="highlighter-rouge">g</code> attribute (for gradient) which after a backprop pass holds the gradient of the computation graph output w.r.t the variable. Examples of variables are inputs to a graph or parameters such as weights and biases.</p>
+  </li>
+  <li>
+    <p><strong>operators</strong> are <code class="highlighter-rouge">NetVar</code> subclasses whose value is automatically (and only once) derived on instance initialization from their operands, which are other variables passed to the initializer. Examples of operators are multiplication, addition, ReLU and Softmax.</p>
+  </li>
+</ul>
+
+<p>The operator initialization mechanism has two implications:</p>
+
+<h4 id="graphs-are-implicit">Graphs are Implicit:</h4>
+
+<p>There is no graph class in the framework. Instead, as operators are instantiated with other nodes as arguments they keep references to their parents, implicitly defining a dependency graph (Figure 2) from which to later back propagate gradients. This being said, it is easy to create convenience wrapper classes for graphs. The framework for instance includes a <code class="highlighter-rouge">FFN</code> (feed-forward network) convenience class.</p>
+
+<h4 id="graphs-are-dynamic">Graphs are Dynamic:</h4>
+
+<p>Because operators compute their value only once on initialization, in order to compute successive forward passes for a graph one must keep parameter variables around and continuously re-instantiate operator nodes, which upon instantiation will hold the value of the forward pass up to that point in their <code class="highlighter-rouge">data</code> property. This mechanism makes graphs dynamic, since their topology can change between passes depending on which operators are instantiated. This is very useful for sequential models of varying input length for example.</p>
+
+<h3 id="forward-and-backward-passes"><a class="toc_item" name="4"></a>Forward and Backward Passes:</h3>
+
+<p>Eq. 1 defines the 3-class classifier for earlier and Eq. 2 shows its decomposition into individual operators and variables:</p>
+
+<table>
+          <tr>
+            <td style="border: none; ">
+            <figure>
+                <img src="/assets/images/nnkit/eq1.svg" alt="" />
+                <figcaption><strong>
+  Eq 1.</strong> 
+  Functional definition of the computation graph from Figure 2.
+</figcaption>
+            </figure>
+            </td>
+          </tr>
+        </table>
+
+<table>
+          <tr>
+            <td style="border: none; ">
+            <figure>
+                <img src="/assets/images/nnkit/eq2.svg" alt="" />
+                <figcaption><strong>
+  Eq 2.</strong> 
+  Decomposition of Eq. 1.
+</figcaption>
+            </figure>
+            </td>
+          </tr>
+        </table>
+
+<p>Code 1 shows NNKit code equivalent to Eq. 2, where arbitrary values have been assigned to the variables.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">nnkit</span> <span class="k">as</span> <span class="n">nn</span>
+
+<span class="c"># Variables:</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">NetVar</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">])</span>
+<span class="n">w1</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">NetVar</span><span class="p">([[</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">],</span> <span class="p">[</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">]])</span>
+<span class="n">b1</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">NetVar</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">])</span>
+<span class="n">w2</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">NetVar</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">],</span> <span class="p">[</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">]])</span>
+<span class="n">b2</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">NetVar</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">])</span>
+
+<span class="c"># Layer 1 Operators:</span>
+<span class="n">mul1</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Multiply</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">w1</span><span class="p">)</span>
+<span class="n">add1</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="n">mul1</span><span class="p">,</span> <span class="n">b1</span><span class="p">)</span>
+<span class="n">relu1</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">ReLU</span><span class="p">(</span><span class="n">add1</span><span class="p">)</span>
+
+<span class="c"># Layer 2 Operators:</span>
+<span class="n">mul2</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Multiply</span><span class="p">(</span><span class="n">relu1</span><span class="p">,</span> <span class="n">w2</span><span class="p">)</span>
+<span class="n">add2</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="n">mul2</span><span class="p">,</span> <span class="n">b2</span><span class="p">)</span>
+<span class="n">smax2</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">SoftMax</span><span class="p">(</span><span class="n">add2</span><span class="p">)</span>
+</code></pre></div></div>
+<figcaption><strong>Code 1:</strong> NNKit implementation of the computation graph from Figure 2, following Eq. 2.</figcaption>
+
+<h4 id="forward-pass">Forward Pass:</h4>
+<p>As mentioned before, all nodes have a <code class="highlighter-rouge">data</code> property which holds the value of the node. In the case of operators this is the value of the forward pass of the graph as constructed up to that point. So the <code class="highlighter-rouge">data</code> of the last operator in a graph holds the value of the graph’s output (Figure 3).</p>
+
+<table>
+          <tr>
+            <td style="border: none; ">
+            <figure>
+                <img src="/assets/images/nnkit/forward.svg" alt="" />
+                <figcaption><strong>
+  Figure 3.</strong> 
+  Forward pass of the computation graph from Figure 2. Node values are accessible thru their <strong>data</strong> property.
+</figcaption>
+            </figure>
+            </td>
+          </tr>
+        </table>
+
+<h4 id="backward-pass">Backward Pass:</h4>
+<p>The backward pass is computed by calling <code class="highlighter-rouge">back()</code> on any operator. This causes each operator to apply chain rule and compute the gradient of its <code class="highlighter-rouge">data</code> w.r.t. its parents (accessible thru each node’s <code class="highlighter-rouge">g</code>). Since it’s possible to call <code class="highlighter-rouge">back()</code> on any operator, it’s possible to do backpropagation for a subgraph of a larger graph, though typically <code class="highlighter-rouge">back()</code> is just called on the last node in a graph.</p>
+
+<table>
+          <tr>
+            <td style="border: none; ">
+            <figure>
+                <img src="/assets/images/nnkit/backward.svg" alt="" />
+                <figcaption><strong>
+  Figure 4.</strong> 
+  Backward pass of the computation graph from Figure 2.
+  Each node's <strong>g</strong> attribute holds the graph's gradient w.r.t that node.
+</figcaption>
+            </figure>
+            </td>
+          </tr>
+        </table>
+
+<p>Eq. 3 shows the forward and backward pass computations at the operator level, for a <code class="highlighter-rouge">Multiply</code> node implementing a 2-in, 3-out layer (equivalent to the output of three neurons). Code 2 shows the implementation of this node in NNKit and hints to how it’s possible to extend the framework with additional operators.</p>
+
+<table>
+          <tr>
+            <td style="border: none; ">
+            <figure>
+                <img src="/assets/images/nnkit/eq3.svg" alt="" />
+                <figcaption><strong>
+  Eq 3.</strong> 
+  Forward and backward passes for a <strong>Multiply</strong> node implementing a 2-in 3-out layer.
+</figcaption>
+            </figure>
+            </td>
+          </tr>
+        </table>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Multiply</span><span class="p">(</span><span class="n">NetOp</span><span class="p">):</span>
+    <span class="s">"""Multiplication.
+
+    y = xw
+    """</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">w</span><span class="p">):</span>
+        <span class="s">"""
+        :param x: NetVar: input 1.
+
+        :param w: NetVar: input 2.
+        """</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span>
+            <span class="n">x</span><span class="o">.</span><span class="n">data</span> <span class="err">@</span> <span class="n">w</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+            <span class="n">x</span><span class="p">,</span> <span class="n">w</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_back</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">w</span><span class="p">):</span>
+        <span class="n">x</span><span class="o">.</span><span class="n">g</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">g</span> <span class="err">@</span> <span class="n">w</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">T</span>
+        <span class="n">w</span><span class="o">.</span><span class="n">g</span> <span class="o">+=</span> <span class="n">x</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">T</span> <span class="err">@</span> <span class="bp">self</span><span class="o">.</span><span class="n">g</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_back</span><span class="p">()</span>
+</code></pre></div></div>
+<figcaption><strong>Code 2:</strong> NNKit implementation of the <strong>Multiply</strong> node from Eq. 3.</figcaption>
+
+<h3 id="optimizers"><a class="toc_item" name="5"></a>Optimizers:</h3>
+
+<p>Optimizers are algorithms that minimize some notion of distance or error between a graph’s output (i.e.: a model’s hypothesis) and a target. An optimization step consists of nudging model <em>parameters</em> (denoted <script type="math/tex">\theta</script>) in the direction opposite of the gradient of the network output w.r.t. the parameters. In NNKit a parameter is simply any <code class="highlighter-rouge">NetVar</code> passed to an optimizer for which derivatives have been computed.</p>
+
+<p>As an example, Eq 4. defines <strong>Gradient Descent with momentum</strong> and Code 3 shows this optimizer as implemented in NNKit.</p>
+
+<table>
+          <tr>
+            <td style="border: none; ">
+            <figure>
+                <img src="/assets/images/nnkit/eq4.svg" alt="" />
+                <figcaption><strong>
+  Eq 4.</strong> 
+  Gradient Descent with momentum.
+</figcaption>
+            </figure>
+            </td>
+          </tr>
+        </table>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">GD</span><span class="p">(</span><span class="n">Optimizer</span><span class="p">):</span>
+    <span class="s">"""Gradient descent with optional momentum.
+
+    Implements the following update for each parameter p:
+
+    m = β1m + (1-β1)df/dp
+    p = p - αm
+
+    Attributes:
+    . learnRate: α ∈ [0,1]
+    how big of an adjustment each parameter undergoes during an optimization step.
+
+    . momentum: β1 ∈ [0,1]
+    over how many samples the exponential moving average m takes place.
+    If set to 0 momentum is disabled and the algorithm becomes simply gradient descent.
+    """</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">momentum</span> <span class="o">=</span> <span class="mf">0.9</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">m</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">data</span><span class="p">)</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">params</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">p</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">m</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">momentum</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">m</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">momentum</span><span class="p">)</span> <span class="o">*</span> <span class="n">p</span><span class="o">.</span><span class="n">g</span>
+            <span class="n">p</span><span class="o">.</span><span class="n">data</span> <span class="o">-=</span> <span class="bp">self</span><span class="o">.</span><span class="n">learnRate</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">m</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="n">p</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
+</code></pre></div></div>
+<figcaption><strong>Code 3:</strong> NNKit implementation of gradient descent with momentum.</figcaption>
+
+<p>NNKit currently implements <strong>Gradient Descent with momentum</strong> and <strong>Adam</strong> (which degenerates to <strong>RMSProp</strong> if momentum is set to 0.). Code 4 shows an example very similar to the one in Code 1 but using the <code class="highlighter-rouge">FFN</code> convenience class along with an optimizer and a loss node. It’s worth noting that even though the <code class="highlighter-rouge">FFN</code> class has a <code class="highlighter-rouge">vars</code> property, the network’s parameters could have just been declared outside the network instance and passed directly to the optimizer.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">nnkit</span> <span class="k">as</span> <span class="n">nn</span>
+
+<span class="c"># 1. input:</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">NetVar</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
+
+<span class="c"># 2. initialize (2,3,3) network:</span>
+<span class="n">net</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">FFN</span><span class="p">(</span>
+    <span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Multiply</span><span class="p">,</span> <span class="n">nn</span><span class="o">.</span><span class="n">rand2</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">)),</span>
+    <span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Add</span><span class="p">,</span> <span class="n">nn</span><span class="o">.</span><span class="n">rand2</span><span class="p">(</span><span class="mi">3</span><span class="p">)),</span>
+    <span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">ReLU</span><span class="p">,),</span>
+    <span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Multiply</span><span class="p">,</span> <span class="n">nn</span><span class="o">.</span><span class="n">rand2</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">3</span><span class="p">)),</span>
+    <span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Add</span><span class="p">,</span> <span class="n">nn</span><span class="o">.</span><span class="n">rand2</span><span class="p">(</span><span class="mi">3</span><span class="p">)),</span>
+    <span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">SoftMax</span><span class="p">,</span> <span class="p">)</span>
+<span class="p">)</span>
+
+<span class="c"># 3. create optimizer and pass parameters to optimize:</span>
+<span class="n">optimizer</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">GD</span><span class="p">(</span><span class="n">net</span><span class="o">.</span><span class="nb">vars</span><span class="p">)</span>
+
+<span class="c"># 4. add loss node at the end of the net to optimize against:</span>
+<span class="n">target</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">NetVar</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+<span class="n">net</span><span class="o">.</span><span class="n">topology</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">nn</span><span class="o">.</span><span class="n">CELoss</span><span class="p">,</span> <span class="n">target</span><span class="p">))</span>
+
+<span class="c"># 5. optimize (a.k.a. train, a.k.a. learn):</span>
+<span class="n">loss</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="s">'inf'</span><span class="p">)</span>
+<span class="k">while</span> <span class="n">loss</span> <span class="o">&gt;</span> <span class="mf">0.01</span><span class="p">:</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">loss</span><span class="p">)</span>
+    <span class="c"># 5.a forward pass: instantiate all operators (variables are persisted from step 2):</span>
+    <span class="n">loss</span> <span class="o">=</span> <span class="n">net</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+
+    <span class="c"># 5.b backprop: compute gradient w.r.t. loss:</span>
+    <span class="n">net</span><span class="o">.</span><span class="n">back</span><span class="p">()</span>
+
+    <span class="c"># 5.c optimize parameters:</span>
+    <span class="n">optimizer</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+
+<span class="c"># 6. remove loss node. Network is trained and ready for testing / performing.</span>
+<span class="n">net</span><span class="o">.</span><span class="n">topology</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+</code></pre></div></div>
+<figcaption><strong>Code 4:</strong> NNKit implementation of a full training session for the computation graph from Figure 2.</figcaption>
+
+<h3 id="practical-examples"><a class="toc_item" name="6"></a>Practical Examples:</h3>
+
+<p>For examples of the framework being applied to specific cases take a look at my posts on <a href="/2018/05/16/digits.html">digits classification</a> and <a href="/2018/05/17/dqn.html">deep Q-learning</a>.</p>
+</p>
+	</div>
+</section>
+
+</div>
+
+    <!-- Footer -->
+	<footer id="footer">
+		<div class="inner">
+			<ul class="icons">
+				
+				
+				
+				
+				
+				
+				
+				
+				<li><a href="https://github.com/saldavonschwartz" class="icon alt fa-github" target="_blank"><span class="label">GitHub</span></a></li>
+				
+				
+				
+				<li><a href="https://www.linkedin.com/in/federicosaldarini" class="icon alt fa-linkedin" target="_blank"><span class="label">LinkedIn</span></a></li>
+				
+			</ul>
+			<ul class="copyright">
+				<li>&copy; 2018 Federico Saldarini. All rights reserved.</li>
+				<li>Based on Forty theme by <a href="https://html5up.net" target="_blank">HTML5 UP</a></li>
+			</ul>
+		</div>
+	</footer>
+
+</div>
+
+<!-- Scripts -->
+	<script src="/assets/js/jquery.min.js"></script>
+	<script src="/assets/js/jquery.scrolly.min.js"></script>
+	<script src="/assets/js/jquery.scrollex.min.js"></script>
+	<script src="/assets/js/skel.min.js"></script>
+	<script src="/assets/js/util.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
+	<!--[if lte IE 8]><script src="/assets/js/ie/respond.min.js"></script><![endif]-->
+	<script src="/assets/js/main.js"></script>
+
+
+</body>
+
+</html>

@@ -8,31 +8,32 @@
 
 \newdimen\XCoord
 \newdimen\YCoord
-\newcommand*{\ExtractCoordinate}[1]{\path (#1); \pgfgetlastxy{\XCoord}{\YCoord};}%
+\newcommand*{\ExtractCoordinate}[1]{\path (#1); \pgfgetlastxy{\XCoord}{\YCoord};}
+
 
 \begin{document}
 \centering
 \begin{tikzpicture}[node distance = 3.5cm, auto]
     % Place nodes
     \node [inner sep=0pt, label=below:input] (1) {\includegraphics[width=85px]
-      {/Users/saldavonschwartz/workspace/site/versions/forty-jekyll-theme/assets/images/digits/7-01-in.png}};
+      {assets/images/digits/7-01-in.png}};
 
     \node [inner sep=0pt, right of=1, label=below:grayscale] (2) {\includegraphics[width=85px]
-      {/Users/saldavonschwartz/workspace/site/versions/forty-jekyll-theme/assets/images/digits/7-02-gray.png}};
+      {assets/images/digits/7-02-gray.png}};
 
     \node [inner sep=0pt, right of=2, label=below:blur] (3) {\includegraphics[width=85px]
-      {/Users/saldavonschwartz/workspace/site/versions/forty-jekyll-theme/assets/images/digits/7-03-blur.png}};
+      {assets/images/digits/7-03-blur.png}};
 
     \node [inner sep=0pt, right of=3, label=below:contrast] (4) {\includegraphics[width=85px]
-      {/Users/saldavonschwartz/workspace/site/versions/forty-jekyll-theme/assets/images/digits/7-04-contrast.png}};
+      {assets/images/digits/7-04-contrast.png}};
 
     \node [inner sep=0pt, right of=4, label=below:binary inverse] (5) {\includegraphics[width=85px]
-      {/Users/saldavonschwartz/workspace/site/versions/forty-jekyll-theme/assets/images/digits/7-05-binary.png}};
+      {assets/images/digits/7-05-binary.png}};
 
     \ExtractCoordinate{5}
 
     \node [inner sep=0pt, label=below:edges] (6) at (\XCoord, \YCoord - 130pt) {\includegraphics[width=85px]
-      {/Users/saldavonschwartz/workspace/site/versions/forty-jekyll-theme/assets/images/digits/7-06-canny.png}};
+      {assets/images/digits/7-06-canny.png}};
 
     \node [inner sep=0pt, rectangle, draw, fill=white, thick, rounded corners, right of=6, minimum size=45pt, text centered]
     (7) {};
@@ -46,7 +47,7 @@
     (7b) at (\XCoord + 10pt, \YCoord - 10pt) {contours};
 
     \node [inner sep=0pt, label=above:ROI] (8) at (\XCoord + 10pt, \YCoord + 130pt) {\includegraphics[width=20px]
-      {/Users/saldavonschwartz/workspace/site/versions/forty-jekyll-theme/assets/images/digits/7-07-10-roi.png}};
+      {assets/images/digits/7-07-10-roi.png}};
 
       \node [inner sep=0pt, right of=8] (9) {NORMALIZATION};
 

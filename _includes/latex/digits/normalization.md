@@ -11,16 +11,16 @@
 \centering
 \begin{tikzpicture}[node distance = 4cm, auto]
     \node [inner sep=0pt, label=below:black and white image] (1) {\includegraphics[width=20px]
-      {/Users/saldavonschwartz/workspace/site/versions/forty-jekyll-theme/assets/images/digits/7-07-10-roi.png}};
+      {assets/images/digits/7-07-10-roi.png}};
 
     \node [inner sep=0pt, right of=1, label=below:dilate + resize 20x20] (2) {\includegraphics[width=50px]
-      {/Users/saldavonschwartz/workspace/site/versions/forty-jekyll-theme/assets/images/digits/7-09-10-resize20.png}};
+      {assets/images/digits/7-09-10-resize20.png}};
 
     \node [inner sep=0pt, right of=2, label=below:pad 4x4 (total 28x28)] (3) {\includegraphics[width=50px]
-      {/Users/saldavonschwartz/workspace/site/versions/forty-jekyll-theme/assets/images/digits/7-10-10-pad4.png}};
+      {assets/images/digits/7-10-10-pad4.png}};
 
     \node [inner sep=0pt, right of=3, label=below:center of mass + dilate] (4) {\includegraphics[width=50px]
-      {/Users/saldavonschwartz/workspace/site/versions/forty-jekyll-theme/assets/images/digits/7-11-10-center.png}};
+      {assets/images/digits/7-11-10-center.png}};
 
     \node [right of=4] (5) {PREDICTION};
 

@@ -10,7 +10,7 @@
 \centering
 \begin{tikzpicture}[node distance = 3.5cm, auto]
 \node [inner sep=0pt, label=below:camera in] (0) {\includegraphics[width=85px]
-  {/Users/saldavonschwartz/workspace/site/versions/forty-jekyll-theme/assets/images/digits/iosin.png}};
+  {assets/images/digits/iosin.png}};
 
   \node [inner sep=5pt, right of=0, rectangle, draw, thick, rounded corners, minimum size=45pt, text centered, align=center]
   (1) {crop\\to\\focus\ area};
@@ -25,7 +25,7 @@
   (4) {predict\\largest\ ROI};
 
   \node [inner sep=0pt, right of=4, label=below:display out] (5) {\includegraphics[width=85px]
-    {/Users/saldavonschwartz/workspace/site/versions/forty-jekyll-theme/assets/images/digits/iosout.png}};
+    {assets/images/digits/iosout.png}};
 
     % Draw edges
     \path [draw, thick,  -latex'] (0) -- (1);

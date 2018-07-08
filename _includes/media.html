@@ -20,7 +20,7 @@
         {% elsif types[forloop.index0] == "2" %}
         <iframe width="{{size[0]}}"  height="{{size[1]}}" src="{{ source }}" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
         {% elsif types[forloop.index0] == "3" %}
-        <video muted autoplay width="{{size[0]}}" height="{{size[1]}}" loop>
+        <video muted autoplay width="{{size[0]}}" height="{{size[1]}}" loop type="video/mp4" controls>
           <source src="{{ site.url | absolute_path}}/assets/images/{{ source }}">
         </video>
         {% endif %}

@@ -1,0 +1,34 @@
+<!-- types:
+1:  local images.
+2: url to video.
+3: local mp4
+-->
+
+{% assign sources = include.sources | split: '; '%}
+{% assign titles = include.titles | split: '; '%}
+{% assign descriptions = include.descriptions | split: '; '%}
+{% assign types = include.types | split: '; '%}
+{% assign sizes = include.sizes | split: '; '%}
+<table>
+  <tr>
+    {% for source in sources %}
+    {% assign size = sizes[forloop.index0] | split: '-' %}
+    <td style="border: none; width: {{100 | divided_by:sources.size}}%;">
+    <figure>
+        {% if types[forloop.index0] == "1" %}
+        <img style="width: {{size[0]}}; height: {{size[1]}};" src="{{ site.url | absolute_path}}/assets/images/{{ source }}" alt="">
+        {% elsif types[forloop.index0] == "2" %}
+        <iframe width="{{size[0]}}"  height="{{size[1]}}" src="{{ source }}" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+        {% elsif types[forloop.index0] == "3" %}
+        <video muted autoplay width="{{size[0]}}" height="{{size[1]}}" loop>
+          <source src="{{ site.url | absolute_path}}/assets/images/{{ source }}">
+        </video>
+        {% endif %}
+        {% if titles[forloop.index0] %}
+        <figcaption><strong>{{titles[forloop.index0]}}</strong> {{ descriptions[forloop.index0] }}</figcaption>
+        {% endif %}
+    </figure>
+    </td>
+    {% endfor %}
+  </tr>
+</table>

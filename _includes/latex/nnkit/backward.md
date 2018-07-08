@@ -1,4 +1,9 @@
-{% latex backward, "<strong>Figure 4.</strong> "Backward pass of the computation graph from Figure 2. Each node's <strong>g</strong> attribute holds the result of the application of chain rule from left to right.%}
+{% latex
+  backward;
+  Figure 4.;
+  Backward pass of the computation graph from Figure 2.
+  Each node's <strong>g</strong> attribute holds the graph's gradient w.r.t that node.
+%}
 \documentclass[tikz, border=0pt]{standalone}
 \usepackage{amsmath}
 \usetikzlibrary{decorations, decorations.pathreplacing}

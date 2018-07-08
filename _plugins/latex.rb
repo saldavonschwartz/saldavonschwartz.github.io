@@ -1,4 +1,4 @@
-# By Federico Saldarin.
+  # By Federico Saldarin.
 # Based on http://github.com/Maxfan-zone http://maxfan.org
 
 module Jekyll
@@ -8,9 +8,10 @@ module Jekyll
         super
 
         # FEDE_CHANGE
-        args = markup.split(",")
+        args = markup.split(";")
         @file_name = args[0].gsub(/\s+/, "")
-        @description = args.length > 1 ? args[1].gsub(/,/ , "").gsub(/"/, "") : nil
+        @title = args.length > 1 ? args[1] : ""
+        @description = args.length > 2 ? args[2] : ""
 
         @header = <<-'END'
         END
@@ -40,26 +41,12 @@ module Jekyll
         end
 
         web_dest_path = File.join("/assets/images", File.basename(context["page"]["url"], ".*"), "#{@file_name}.svg")
-        # FEDE_CHANGE
-
-        # original:
-        # "<embed class=\"tikz\" src=\"#{web_dest_path}\" type=\"image/svg+xml\" />"
-
-        # version pre table (does not scale / respond):
-        # "<figure>
-        #     <span class=\"image fit\">
-        #       <embed class=\"latex\" src=\"#{web_dest_path}\" type=\"image/svg+xml\" />
-        #       <figcaption>#{@description}</figcaption>
-        #     </span>
-        # </figure>"
-
-        # responsive table version:
         "<table >
           <tr>
-            <td>
+            <td style=\"border: none; \">
             <figure>
                 <img src=\"#{web_dest_path}\" alt=\"\">
-                <figcaption>#{@description}</figcaption>
+                <figcaption><strong>#{@title}</strong> #{@description}</figcaption>
             </figure>
             </td>
           </tr>

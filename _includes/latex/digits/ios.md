@@ -1,4 +1,8 @@
-{% latex ios, "<strong>Figure 8.</strong> Diagram of iOS app combining ROI extraction + normalization and the trained model."  %}
+{% latex
+  ios;
+  Figure 8.;
+  Diagram of iOS app combining ROI extraction + normalization and the trained model.
+%}
 \documentclass[tikz, border=0pt]{standalone}
 \usetikzlibrary{shapes, arrows, calc}
 

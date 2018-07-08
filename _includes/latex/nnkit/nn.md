@@ -1,15 +1,18 @@
-{% latex nn, "<strong>Figure 1.</strong> 3-class, (3,3) classifier neural net. Superscripts = layer index; subscripts = units. Constant dummy nodes are inserted to multiply the bias terms"%}
+{% latex
+  nn;
+  Figure 1.;
+  3-class, 3-3 classifier neural net. Superscripts = layer index, subscripts = units.
+  Constant dummy nodes are inserted to multiply the bias terms
+%}
 \documentclass[tikz, border=0pt]{standalone}
 \begin{document}
 \def\layersep{6cm}
 \def\layervert{3.5}
 
-\begin{tikzpicture}[->,draw=black!50, node distance=\layersep]
+\begin{tikzpicture}[->,draw=black!60, node distance=\layersep]
     \tikzstyle{every pin edge}=[<-,shorten <=1pt]
-    \tikzstyle{neuron}=[circle,fill=black!25, line width=1.5pt, minimum size=40pt,inner sep=1pt]
+    \tikzstyle{neuron}=[circle,fill=black, line width=1.5pt, minimum size=40pt,inner sep=1pt]
     \tikzstyle{input neuron}=[neuron, draw, fill=none];
-    \tikzstyle{output neuron}=[neuron, fill=red!50];
-    \tikzstyle{hidden neuron}=[neuron, fill=blue!50];
     \tikzstyle{annot} = [text centered]
 
     % input:
@@ -26,7 +29,7 @@
 
     % out:
     \foreach \name / \y in {0,...,2}
-        \node[input neuron, pin={[pin edge={->}]right:$P(Class_\y | \mathbf{x})$}] (O-\y) at (\layersep*2, -\y*\layervert) {\scriptsize $u^{(2)}_\y:\sum|\mathrm{SMax}$};
+        \node[input neuron, pin={[pin edge={->}]right:$P(Class_\y | \mathbf{x})$}] (O-\y) at (\layersep*2, -\y*\layervert) {\scriptsize $u^{(2)}_\y:\sum|\mathrm{smax}$};
 
     % l0 - l1:
     \foreach \dest in {0,...,2}

@@ -22,8 +22,12 @@
                 <p>{{ content }}</p>
                 <ul class="actions">
                     <li><a href="assets/ResumeFedericoSaldarini2017.pdf" class="button">Resume</a></li>
-                    <!-- <li><a href="{{ site.linkedin_url }}" class="icon alt fa-linkedin" target="_blank"><span class="label">LinkedIn</span></a></li>
-                    <li><a href="{{ site.github_url }}" class="icon alt fa-github" target="_blank"><span class="label">GitHub</span></a></li> -->
+                    {% if site.github_url %}
+            				<li><a href="{{ site.github_url }}" class="icon alt fa-github" target="_blank"><span class="label">GitHub</span></a></li>
+            				{% endif %}
+                    {% if site.linkedin_url %}
+            				<li><a href="{{ site.linkedin_url }}" class="icon alt fa-linkedin" target="_blank"><span class="label">LinkedIn</span></a></li>
+            				{% endif %}
                 </ul>
             </div>
         </div>

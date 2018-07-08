@@ -1,4 +1,8 @@
-{% latex forward, "<strong>Figure 3.</strong> "Forward pass of the computation graph from Figure 2. Node values are accessible thru their <strong>data</strong> property (operator values transposed for legibility).%}
+{% latex
+  forward;
+  Figure 3.;
+  Forward pass of the computation graph from Figure 2. Node values are accessible thru their <strong>data</strong> property.
+%}
 \documentclass[tikz, border=0pt]{standalone}
 \usepackage{amsmath}
 \usetikzlibrary{decorations, decorations.pathreplacing}
@@ -16,22 +20,15 @@
 
     \node (w1) at (0,\layervert) {
       $\begin{bmatrix}
-      w^{{1}}_{00} & w^{{1}}_{01} & w^{{1}}_{02} \\
-      w^{{1}}_{10} & w^{{1}}_{11} & w^{{1}}_{12}
+      w^{(1)}_{00} & w^{(1)}_{01} & w^{(1)}_{02} \\
+      w^{(1)}_{10} & w^{(1)}_{11} & w^{(1)}_{12}
       \end{bmatrix}$
     };
 
-    \node (m1) at (\layersep, 0) {
-      $\begin{bmatrix}
-      Mul^{(1)}_0 \\ Mul^{(1)}_1 \\ Mul^{(1)}_2
-      \end{bmatrix}^\mathbf{T}$
-    };
+    \node (m1) at (\layersep, 0) {$\mathbf{x}\mathbf{W^{(1)}}$};
 
-    \node (a1) at (\layersep*2, 0) {
-      $\begin{bmatrix}
-      Add^{(1)}_0 \\ Add^{(1)}_1 \\ Add^{(1)}_2
-      \end{bmatrix}^\mathbf{T}$
-    };
+
+    \node (a1) at (\layersep*2, 0) {$\mathrm{mul^{(1)}} + \mathbf{b}^{(1)}$};
 
     \node (b1) at (\layersep,\layervert) {
       $\begin{bmatrix}
@@ -39,31 +36,21 @@
       \end{bmatrix}$
     };
 
-    \node (r1) at (\layersep*3, 0) {
-      $\begin{bmatrix}
-      ReLU^{(1)}(Add^{(1)}_0)_0 \\ ReLU^{(1)}(Add^{(1)}_1)_1 \\ ReLU^{(1)}(Add^{(1)}_2)_2
-      \end{bmatrix}^\mathbf{T}$
-    };
+    \node (r1) at (\layersep*3, 0) {$\mathrm{ReLU}(\mathrm{add^{(1)}})$};
+
 
     \node (w2) at (\layersep*3,\layervert) {
       $\begin{bmatrix}
-      w^{{2}}_{00} & w^{{2}}_{01} & w^{{2}}_{02} \\
-      w^{{2}}_{10} & w^{{2}}_{11} & w^{{2}}_{12} \\
-      w^{{2}}_{20} & w^{{2}}_{21} & w^{{2}}_{22}
+      w^{(2)}_{00} & w^{(2)}_{01} & w^{(2)}_{02} \\
+      w^{(2)}_{10} & w^{(2)}_{11} & w^{(2)}_{12} \\
+      w^{(2)}_{20} & w^{(2)}_{21} & w^{{2}}_{22}
       \end{bmatrix}$
     };
 
-    \node (m2) at (\layersep*4, 0) {
-      $\begin{bmatrix}
-      Mul^{(2)}_0 \\ Mul^{(2)}_1 \\ Mul^{(2)}_2
-      \end{bmatrix}^\mathbf{T}$
-    };
+    \node (m2) at (\layersep*4, 0) {$\mathrm{ReLU^{(1)}}\mathbf{W}^{(2)}$};
 
-    \node (a2) at (\layersep*5, 0) {
-      $\begin{bmatrix}
-      Add^{(2)}_0 \\ Add^{(2)}_1 \\ Add^{(2)}_2
-      \end{bmatrix}^\mathbf{T}$
-    };
+
+    \node (a2) at (\layersep*5, 0) {$\mathrm{mul^{(2)}} + \mathbf{b}^{(2)}$};
 
     \node (b2) at (\layersep*4,\layervert) {
       $\begin{bmatrix}
@@ -71,11 +58,7 @@
       \end{bmatrix}$
     };
 
-    \node (s2) at (\layersep*6, 0) {
-      $\begin{bmatrix}
-      SMax^{(2)}(Add^{(2)}_0)_0 \\ SMax^{(2)}(Add^{(2)}_1)_1 \\ SMax^{(2)}(Add^{(2)}_2)_2
-      \end{bmatrix}^\mathbf{T}$
-    };
+    \node (s2) at (\layersep*6, 0) {$\mathrm{smax}(\mathrm{add}^{(2)})$};
 
     % edges:
     \draw (x) -- (m1) node {};

@@ -72,7 +72,7 @@
   <li><strong><a href="#1">About</a></strong></li>
   <li><strong><a href="#2">From Q-Learning to DQN</a></strong></li>
   <li><strong><a href="#3">DQN-Lite</a></strong></li>
-  <li><strong><a href="#4">Training</a></strong></li>
+  <li><strong><a href="#4">Training and Testing</a></strong></li>
   <li><strong><a href="#5">Results: CartPole-v0</a></strong></li>
   <li><strong><a href="#6">Results: LunarLander-v2</a></strong></li>
   <li><strong><a href="#7">Results: MountainCar-v0</a></strong></li>
@@ -262,15 +262,10 @@ for position, velocity, etc. This means that states have already undergone dimen
           </tr>
         </table>
 
-<h3 id="training"><a class="toc_item" name="4"></a>Training:</h3>
+<h3 id="training-and-testing"><a class="toc_item" name="4"></a>Training and Testing:</h3>
 
+<h4 id="training">Training:</h4>
 <p>Two recurring themes in reinforcement learning are <strong>exploration vs exploitation</strong> and <strong>credit assignment</strong>. The Gym environments I solved in this project correspond to problems with pre-defined reward functions. So for training I focused on balancing exploration vs exploitation instead.</p>
-
-<p>CartPole turned out to be the easiest environment since the reward scheme is a single positive reward for each timestep ‘alive’. This means that an agent solving CartPole can do well without considering extremely long sequences of actions.</p>
-
-<p>In contrast, MountainCar seemed the hardest due to it not having much of a shaping reward. Instead, the agent has to do a lot of exploration without much (positive) feedback until reaching a terminal, larger reward. Only at that point is the agent able to propagate that knowledge back and start developing a strategy towards the terminal reward.</p>
-
-<p>LunarLander seems to be a generally balanced problem. It has the largest observation:action space of the three (8:4, compared to 4:2 for CartPole and 2:3 for MountainCar) but it also has both terminal as well as ‘living’ shaping rewards. The ‘living’ rewards at each timestep are key in guiding the agent towards a sensible behavior.</p>
 
 <p>Tables 1 and 2 show the fixed and variable settings I used in training.</p>
 
@@ -398,11 +393,16 @@ for position, velocity, etc. This means that states have already undergone dimen
   </table>
 
 </div>
-<figcaption><strong>Table 2.</strong> Variable hyperparameters during training.</figcaption>
+<figcaption><strong>Table 2.</strong> Different combinations of total training steps and &epsilon;-annealing hyperparameters.</figcaption>
 
-<p>In the following sections keep in mind that training was done in terms of total timesteps but logging was done in terms of episodes. Since episodes contain a variable number of timesteps, the ε-schedules often look parabolic even though they are linear in the number of steps. Losses were also averaged over episodes.</p>
+<p>Plots of the training stats for each problem are included. When looking at these keep in mind that training was done in terms of total timesteps but logging was done in terms of episodes. This has two implications:</p>
+<ol>
+  <li>Since episodes contain different number of timesteps, the ε-schedules often look parabolic even though they are linear in the number of steps.</li>
+  <li>Training losses are averaged over whole episodes.</li>
+</ol>
 
-<p>Finally, testing scores were averaged over 3 runs, each complying with each problem’s <strong>solved criteria</strong>. For example, CartPole defines solved as an average reward of at least 195 over 100 episodes. So I did three separate runs of 100 episodes each, recording the average reward over the 100 episodes on each run and then further averaging those 3 results.</p>
+<h4 id="testing">Testing:</h4>
+<p>OpenAI Gym defines the <em>solved</em> criteria for these environments as an average reward over 100 consecutive episodes. In my tests however I repeated this test three times and averaged the results but if a policy scored lower than the required average in any of the three runs, I disqualified it even if the 3-run average was within the solved criteria. An example of this occurred in LunarLander, where model 6 scored above 200 over 3 runs but scored 195.874 in the first 100-episode run.</p>
 
 <h3 id="results-cartpole-v0"><a class="toc_item" name="5"></a>Results: CartPole-v0:</h3>
 
@@ -639,13 +639,13 @@ for position, velocity, etc. This means that states have already undergone dimen
   </table>
 
 </div>
-<figcaption><strong>Table 1b.</strong> CartPole-v0 test stats.</figcaption>
+<figcaption><strong>Table 1b.</strong> CartPole-v0 test stats. + = best model, * = general model (i.e.: resulted in a policy which solves all three problems), - = worst model.</figcaption>
 
 <h3 id="results-lunarlander-v2"><a class="toc_item" name="6"></a>Results: LunarLander-v2:</h3>
 
 <ul>
   <li><strong>Solved Criteria</strong>: avg. reward &gt;= 200 over 100 episodes.</li>
-  <li><strong>Success Model Ratio</strong>: 5/12 = 0.417</li>
+  <li><strong>Success Model Ratio</strong>: 4/12 = 0.333</li>
   <li><strong>Best Vs General Model Improvement</strong>: 220.943/204.024 = 0.077</li>
   <li><a href="https://github.com/openai/gym/wiki/Leaderboard#lunarlander-v2">OpenAI Gym Wiki</a></li>
 </ul>
@@ -803,13 +803,6 @@ for position, velocity, etc. This means that states have already undergone dimen
         <td><strong>208.109</strong></td>
       </tr>
       <tr>
-        <td>6</td>
-        <td>195.874</td>
-        <td>206.744</td>
-        <td>221.396</td>
-        <td><strong>208.005</strong></td>
-      </tr>
-      <tr>
         <td>10 <script type="math/tex">^{\mathbb{(\ast)}}</script></td>
         <td>206.826</td>
         <td>203.496</td>
@@ -822,6 +815,13 @@ for position, velocity, etc. This means that states have already undergone dimen
         <td>200.895</td>
         <td>201.755</td>
         <td><strong>201.326</strong></td>
+      </tr>
+      <tr>
+        <td>6 <script type="math/tex">^{\mathbb{(?)}}</script></td>
+        <td>195.874</td>
+        <td>206.744</td>
+        <td>221.396</td>
+        <td>208.005</td>
       </tr>
       <tr>
         <td>7</td>
@@ -876,7 +876,7 @@ for position, velocity, etc. This means that states have already undergone dimen
   </table>
 
 </div>
-<figcaption><strong>Table 1c.</strong> LunarLander-v2 test stats.</figcaption>
+<figcaption><strong>Table 1c.</strong> LunarLander-v2 test stats. + = best model, * = general model (i.e.: resulted in a policy which solves all three problems), - = worst model, ? = failed a run even though average falls within solved.</figcaption>
 
 <h3 id="results-mountaincar-v0"><a class="toc_item" name="7"></a>Results: MountainCar-v0:</h3>
 
@@ -1113,7 +1113,7 @@ for position, velocity, etc. This means that states have already undergone dimen
   </table>
 
 </div>
-<figcaption><strong>Table 1d.</strong> MountainCar-v0 test stats.</figcaption>
+<figcaption><strong>Table 1d.</strong> MountainCar-v0 test stats. + = best model, * = general model (i.e.: resulted in a policy which solves all three problems), - = worst model.</figcaption>
 </p>
 	</div>
 </section>

@@ -1,7 +1,7 @@
 {% latex
   graph;
   Figure 2.;
-  3-class, 3-3 classifier computation graph. Superscripts = (implicit) layers. Subscripts = variable dimensions.
+  3-class, 3-3 classifier computation graph. Superscripts = (implicit) layers. Subscripts = variable dimensions. Output transposed for legibility.
 %}
 \documentclass[tikz, border=0pt]{standalone}
 \usepackage{amsmath}
@@ -28,7 +28,10 @@
     \node[op] (m2) at (\layersep*4, 0) {$\mathrm{mul^{(2)}}$};
     \node[op] (a2) at (\layersep*5, 0) {$\mathrm{add^{(2)}}$};
     \node[var] (b2) at (\layersep*4,\layervert) {$\mathbf{b}^{(2)}_{3}$};
-    \node[op, pin={[pin edge={->}]right:$P(Class | \mathbf{x})_{3}$}] (s2) at (\layersep*6, 0) {\scriptsize $\mathrm{smax^{(2)}}$};
+    \node[op, pin={[pin edge={->}]right:
+    $
+    \begin{bmatrix}P(Class_0 | \mathbf{x}) \\ P(Class_1 | \mathbf{x}) \\ P(Class_2 | \mathbf{x})\end{bmatrix}^{\mathbf{T}}
+    $}] (s2) at (\layersep*6, 0) {\scriptsize $\mathrm{smax^{(2)}}$};
 
     % edges:
     \draw (x) -- (m1) node {};

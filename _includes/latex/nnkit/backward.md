@@ -18,47 +18,47 @@
 
     % nodes:
     \node (x) at (0,0) {
-      $\frac{\partial Mul^{(1)}}{\partial \mathbf{x}}$
+      $\frac{\partial \mathrm{mul}^{(1)}}{\partial \mathbf{x}}$
     };
 
     \node (w1) at (0,\layervert) {
-      $\frac{\partial Mul^{(1)}}{\partial \boldsymbol{W}^{(1)}}$
+      $\frac{\partial \mathrm{mul}^{(1)}}{\partial \mathbf{W}^{(1)}}$
     };
 
     \node (m1) at (\layersep, 0) {
-      $\frac{\partial Add^{(1)}}{\partial Mul^{(1)}}$
+      $\frac{\partial \mathrm{add}^{(1)}}{\partial \mathrm{mul}^{(1)}}$
     };
 
     \node (a1) at (\layersep*2, 0) {
-      $\frac{\partial ReLU^{(1)}}{\partial Add^{(1)}}$
+      $\frac{\partial \mathrm{ReLU}^{(1)}}{\partial \mathrm{add}^{(1)}}$
     };
 
     \node (b1) at (\layersep,\layervert) {
-      $\frac{\partial Add^{(1)}}{\partial \mathbf{b}^{(1)}}$
+      $\frac{\partial \mathrm{add}^{(1)}}{\partial \mathbf{b}^{(1)}}$
     };
 
     \node (r1) at (\layersep*3, 0) {
-      $\frac{\partial Mul^{(2)}}{\partial ReLU^{(1)}}$
+      $\frac{\partial \mathrm{mul}^{(2)}}{\partial \mathrm{ReLU}^{(1)}}$
     };
 
     \node (w2) at (\layersep*3,\layervert) {
-      $\frac{\partial Mul^{(2)}}{\partial \boldsymbol{W}^{(2)}}$
+      $\frac{\partial \mathrm{mul}^{(2)}}{\partial \mathbf{W}^{(2)}}$
     };
 
     \node (m2) at (\layersep*4, 0) {
-      $\frac{\partial Add^{(2)}}{\partial Mul^{(2)}}$
+      $\frac{\partial \mathrm{add}^{(2)}}{\partial \mathrm{mul}^{(2)}}$
     };
 
     \node (a2) at (\layersep*5, 0) {
-      $\frac{\partial SMax^{(2)}_i}{\partial Add^{(2)}_i}$
+      $\frac{\partial \mathrm{smax}^{(2)}_i}{\partial \mathrm{add}^{(2)}_i}$
     };
 
     \node (b2) at (\layersep*4,\layervert) {
-      $\frac{\partial Add^{(2)}}{\partial \mathbf{b}^{(2)}}$
+      $\frac{\partial \mathrm{add}^{(2)}}{\partial \mathbf{b}^{(2)}}$
     };
 
     \node (s2) at (\layersep*6, 0) {
-      $\frac{\partial SMax^{(2)}}{\partial SMax^{(2)}} = 1$
+      $\frac{\partial \mathrm{smax}^{(2)}}{\partial \mathrm{smax}^{(2)}} = 1$
     };
 
     % edges:

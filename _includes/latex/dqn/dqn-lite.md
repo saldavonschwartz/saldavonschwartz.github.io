@@ -34,7 +34,7 @@
 \Statex {\normalsize $\L = \textrm{loss function}$}
 \Statex
 \State $f, a \gets env.state.dim, env.action.dim$
-\State $Q: \R^{f} \rightarrow \R^{a} \defeq \func{FFN}(s, f \rightarrow h \rightarrow a)$\Comment{prediction network}
+\State $Q: \R^{n \times f} \rightarrow \R^{n \times a} \defeq \func{FFN}(s, f, h, a)$\Comment{prediction network}
 \State $Q_t \gets copy(Q)$\Comment{target network}
 \Statex
   \State $replay \gets queue(p_{max})$
@@ -58,7 +58,7 @@
       \mat{\hat Y}_{n, a} & a\neq\mat E_{n, 1}
    \end{cases}$
   \Statex
-  \State $optimize(\L(\mat Y, \mat{\hat Y}, \theta_Q), Adam, \alpha)$\Comment{learn Q-values}
+  \State $optimize(Q, \L(\mat Y, \mat{\hat Y}), \alpha)$\Comment{learn Q-values}
   \Statex
   \If{$\mod((t - (p_{min} - 1) + 1), t_{update}) = 0$}\Comment{update target network}
   \State $Q_t \gets copy(Q)$

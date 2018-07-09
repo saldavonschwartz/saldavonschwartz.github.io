@@ -78,7 +78,7 @@
 
 <h3 id="about"><a class="toc_item" name="1"></a>About:</h3>
 
-<p>In this project I trained 2 and 3-layer FFN classifiers on the <a href="http://yann.lecun.com/exdb/mnist/">MNIST</a> dataset and deployed a final model in an iOS app as a practical example. The models were implemented and trained in Python with <a href="/2018/05/18/nnkit.html">NNKit</a>, a framework I developed to study neural networks, and the iOS example was done in Objective-C and C++.</p>
+<p>In this project I trained 2 and 3-layer FFN classifiers on the <a href="http://yann.lecun.com/exdb/mnist/">MNIST</a> dataset and deployed a final model in an iOS app as a practical example. The models were implemented and trained in Python with <a href="/2018/05/18/nnkit.html">NNKit</a> (a framework I developed to study neural networks) and the iOS example was done in Objective-C and C++.</p>
 
 <p>The final model achieves 99% test accuracy in the MNIST test set (<script type="math/tex">{\small 100 \times \frac{\mathrm{correct\ predictions}}{\mathrm{total\ predictions}}}</script>) and performs fairly well in practice with both handwritten and computer-generated digits.</p>
 
@@ -119,13 +119,13 @@
 </table>
 
 <h3 id="learning-mnist"><a class="toc_item" name="2"></a>Learning MNIST:</h3>
-<p>I trained different combinations of network topologies and hyperparameters (Tables 1 and 2) on the whole MNIST train set and used the first half of the test set (5K examples) for validation, setting aside the other half for eventual testing. At the end of each training epoch, I measured the models’ validation accuracy and kept the five best performing models across all epochs based on this performance measure as a form of regularization (Algorithm 1).</p>
+<p>I trained different combinations of network topologies and hyperparameters (Tables 1 and 2) on the whole MNIST train set and used the first half of the test set (5K examples) for validation, setting aside the other half for testing. At the end of each training epoch I measured the models’ validation accuracies and kept the five best performing models across all epochs based on this performance measure as a form of regularization (Algorithm 1).</p>
 
 <div style="overflow-x: auto;">
   <table>
     <thead>
       <tr>
-        <th>Model Output (10 units)</th>
+        <th>Model Output (10-unit layer)</th>
         <th>Epochs</th>
         <th>Loss</th>
         <th>Optimizer</th>
@@ -134,7 +134,7 @@
     </thead>
     <tbody>
       <tr>
-        <td><script type="math/tex">\mathrm{Softmax(\mathbf{x}\boldsymbol{W} + \mathbf{b})}</script></td>
+        <td>softmax</td>
         <td>100</td>
         <td>cross entropy</td>
         <td>gradient descent w / momentum ( <script type="math/tex">\beta = 0.9</script>)</td>
@@ -244,7 +244,9 @@
 </div>
 <figcaption><strong>Table 3:</strong> Training results.</figcaption>
 
-<p>Figures 3 and 4 show training stats for the best models. It can be seen that the best accuracy was not achieved in the same epoch as the lowest validation loss (the usual measure to decide on early stopping). This could suggest that keeping models based on accuracy had a further regularizing effect.</p>
+<p>Figures 3 and 4 show training stats for the best models. From these it can be seen that best accuracy was not achieved in the same epoch as lowest validation loss, which is the usual measure to decide on early stopping. This seems to indicate that early stopping based on accuracy was actually better.</p>
+
+<p>A possible interpretation for why stopping on accuracy might have been better is that the loss function measures distance from the target and the targets in this problem are one-hot vectors equivalent to 100% probabilities for the right digit and 0% probabilities for all other digits. Then matching a 100% probability would probably mean overfitting to noise specific to the dataset. Accuracy instead measures the relative probabilities of digits within the output distribution (i.e.: the prediction is the digit with highest probability, without it necessarily being 100%).</p>
 
 <!-- types:
 1:  local images.
@@ -351,7 +353,7 @@
 </div>
 <figcaption><strong>Table 4.</strong> Testing results on the remaining 5K examples in the MNIST test set.</figcaption>
 
-<p>For a baseline, I relied on error rates for similar network architectures as reported in the MNIST website, which I transcribed in Table 5. The table does not include entries where the dataset was deskewed or augmented (i.e.: distortions) since I did not implement these techniques. Given this table, my test results were very satisfactory.</p>
+<p>For a baseline, I relied on error rates for similar network architectures as reported in the MNIST website, which I transcribed in Table 5. This transcribed table does not include entries where the dataset was deskewed or augmented (i.e.: distortions) since I did not implement these techniques. Given this table, my test results were very satisfactory.</p>
 
 <table>
   <thead>
@@ -402,11 +404,11 @@
   </tbody>
 </table>
 
-<figcaption><strong>Table 5.</strong> Testing results for 2 and 3-layer FFNs without additional data preprocessing nor augmentation, from MNIST website.</figcaption>
+<figcaption><strong>Table 5.</strong> Testing results for 2 and 3-layer FFNs without preprocessing of the dataset, from MNIST website.</figcaption>
 
 <h3 id="testing-custom-images"><a class="toc_item" name="4"></a>Testing Custom Images:</h3>
 
-<p>I tested the models on photographs of handwritten digits taken with an iPhone camera, to mimic the conditions under which the final model would perform. The photographs were first normalized with OpenCV (Figure 5), in a way similar to that described in the MNIST website:</p>
+<p>I tested the models on photographs of handwritten digits taken with an iPhone to mimic the conditions under which the final model would perform. To my surprise my first tests yielded very poor performance. This turned out to be because I overlooked that the MNIST set was normalized in a specific way and my real-world test images were not. So I implemented a normalization step in OpenCV (Figure 5), in a way similar to that described in the MNIST website:</p>
 <blockquote>
   <p>The original black and white (bilevel) images from NIST were size normalized to fit in a 20x20 pixel box while preserving their aspect ratio. The resulting images contain grey levels as a result of the anti-aliasing technique used by the normalization algorithm. the images were centered in a 28x28 image by computing the center of mass of the pixels, and translating the image so as to position this point at the center of the 28x28 field.</p>
 </blockquote>
@@ -425,9 +427,9 @@
           </tr>
         </table>
 
-<p>With normalization, model 5 correctly predicted all photographs and models 1 thru 4 correctly predicted all but one. Based on these results and the fact that model 5 was considerably smaller than the other four models (2.2MB vs 7.3MB), which made it more attractive for mobile deployment, I decided to keep model 5 as the final model.</p>
+<p>With normalization model 5 correctly predicted all photographs and models 1 thru 4 correctly predicted all but one. Model 5 was also the smallest model which made it more attractive for mobile deployment (2.2MB vs 7.3MB). So at this point I decided on model 5 as the final model for deployment.</p>
 
-<p>Another issue was that real photographs taken in the iOS app would likely contain other elements in the scene besides digits, so in some cases it wouldn’t make sense to make a prediction from an image as a whole. I addressed this by extracting regions of interest (ROIs) potentially depicting digits and normalizing and predicting these instead (Figure 6).</p>
+<p>A separate issue related to deployment was that real photographs taken in the iOS app would likely contain other elements in the scene besides digits, so in some cases it wouldn’t make sense to make a prediction from an image as a whole. I partially addressed this by implementing a ROI (region of interest) extraction step before normalization and running prediction on the these regions instead (Figure 6).</p>
 
 <table>
           <tr>
@@ -436,7 +438,7 @@
                 <img src="/assets/images/digits/roi.svg" alt="" />
                 <figcaption><strong>
   Figure 6.</strong> 
-  Extracting ROIs (regions of interest) from a camera image. Each ROI is then normalized (Figure 3).
+  Extracting ROIs (regions of interest) from a camera image. Each ROI is then normalized (Figure 5).
 </figcaption>
             </figure>
             </td>
@@ -461,7 +463,7 @@
         <img style="width: 50%; height: 50%;" src="/assets/images/digits/7-13-label.png" alt="" />
         
         
-        <figcaption><strong>Figure 7.</strong> Annotated predictions after carrying out the operations from Figures 3 and 4 for all ROIs.</figcaption>
+        <figcaption><strong>Figure 7.</strong> Annotated predictions after carrying out the operations from Figures 5 and 6 for all ROIs.</figcaption>
         
     </figure>
     </td>

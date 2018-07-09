@@ -18,15 +18,15 @@
 
     % nodes:
     \node[var] (x) at (0,0) {$\mathbf{X}_{n \times f}$};
-    \node[var] (w1) at (0,\layervert) {$\boldsymbol{W}_{f \times 512}^{(1)}$};
+    \node[var] (w1) at (0,\layervert) {$\mathbf{W}_{f \times 512}^{(1)}$};
     \node[op] (m1) at (\layersep, 0) {$\mathrm{Mul}^{(1)}$};
     \node[op] (a1) at (\layersep*2, 0) {$\mathrm{Add}^{(1)}$};
-    \node[var] (b1) at (\layersep,\layervert) {$\mathbf{b^T}_{512}^{(1)}$};
+    \node[var] (b1) at (\layersep,\layervert) {$\mathbf{b}_{512}^{(1)}$};
     \node[op] (r1) at (\layersep*3, 0) {\scriptsize $\mathrm{ReLU}^{(1)}$};
 
-    \node[var] (w2) at (\layersep*3,\layervert) {$\boldsymbol{W}_{512 \times a}^{(2)}$};
+    \node[var] (w2) at (\layersep*3,\layervert) {$\mathbf{W}_{512 \times a}^{(2)}$};
     \node[op] (m2) at (\layersep*4, 0) {$\mathrm{Mul}^{(2)}$};
-    \node[var] (b2) at (\layersep*4,\layervert) {$\mathbf{b^T}_{a}^{(2)}$};
+    \node[var] (b2) at (\layersep*4,\layervert) {$\mathbf{b}_{a}^{(2)}$};
     \node[op] (a2) at (\layersep*5, 0) {$\mathrm{Add}^{(2)}$};
     \node (ac) at (\layersep*6.5, 0) {$
       \begin{bmatrix}

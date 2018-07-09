@@ -49,8 +49,9 @@
   \State $a_0 \gets \epsilon{\operatorname{-}}greedy(\epsilon, \underset{a}{\operatorname{argmax}}\ Q(s_0))$
   \State $s_1, r_1, done \gets env.step(a_0)$
   \State $replay \pluseq (s_0, a_0, s_1, r_1, done)$\Comment{accumulate experience}
+  \State $t \pluseq 1$
   \Statex
-  \If{$t \geq (p_{min} - 1)$}
+  \If{$t \geq p_{min}$}
   \State $\mat E \gets rand(replay, p_{batch})$
   \State $\mat{\hat Y} \gets Q(\mat E_{n, 0})$
   \State $\mat Y_{n, a} \gets \begin{cases}
@@ -60,7 +61,7 @@
   \Statex
   \State $optimize(Q, \L(\mat Y, \mat{\hat Y}), \alpha)$\Comment{learn Q-values}
   \Statex
-  \If{$\mod((t - (p_{min} - 1) + 1), t_{update}) = 0$}\Comment{update target network}
+  \If{$\mod((t - p_{min}) + 1, t_{update}) = 0$}\Comment{update target network}
   \State $Q_t \gets copy(Q)$
   \EndIf
   \EndIf

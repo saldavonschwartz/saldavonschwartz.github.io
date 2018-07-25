@@ -1,7 +1,7 @@
 {% latex
   nn;
   Figure 1.;
-  3-class, 3-3 classifier neural net. Superscripts = layer index, subscripts = units.
+  3-class, 3-3 classifier neural net. Superscripts = layer indices, subscripts = units.
   Constant dummy nodes are inserted to multiply the bias terms
 %}
 \documentclass[tikz, border=0pt]{standalone}

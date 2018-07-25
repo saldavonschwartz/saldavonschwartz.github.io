@@ -24,34 +24,34 @@
 \begin{algorithmic}[1]
 
 \Function {\bf TrainMNIST}{$T, V, e_{max}, \Theta, B, A, best_{max}$}:
-\Statex {\normalsize $T = \textrm{training set};\ V = \textrm{validation set};\ e_{max} = \textrm{total epochs to train},\ \Theta = \textrm{topologies}$}
-\Statex {\normalsize $B = \textrm{batch sizes};\ A = \textrm{learn rates};\ best_{max} = \textrm{how many high scoring models to keep}$}
+\Statex {\normalsize $T = \textrm{training set};\ V = \textrm{validation set};\ e_{max} = \textrm{total training epochs},\ \Theta = \textrm{topologies}$}
+\Statex {\normalsize $B = \textrm{batch sizes};\ A = \textrm{learn rates};\ best_{max} = \textrm{number of checkpoints to keep}$}
 \Statex
   \State $best \gets queue(best_{max})$
   \Statex
-  \For{$\theta, batchSize, \alpha \in \Theta \times B \times A$}
-    \State $m: \R^{n \times 784} \rightarrow \R^{n \times 10} \defeq \func{FFN}(\theta_m, smax_{10})$\Comment{net topology + 10-unit smax layer}
+  \For{$\theta, b, \alpha \in \Theta \times B \times A$}
+    \State $m: \R^{n \times 784} \rightarrow \R^{n \times 10} \defeq \func{FFN}(\theta, smax_{10})$\Comment{net topology + 10-unit smax layer}
     \State $e \gets 0$
     \Statex
-    \While{$\neg diverged(m) \land e < e_{max}$}
-      \For{$\mathbf{X}_t, \mathbf{Y}_t \in batches(T, batchSize)$}\Comment{train}
+    \For{$e \in [1, e_{max}]$}
+      \State $shuffle(T)$\Comment{1. train}
+      \Statex
+      \For{$\mathbf{X}_t, \mathbf{Y}_t \in minibatch(T, b)$}
         \State $\mathbf{\hat Y}_t \gets m(\mathbf{X}_t)$
-        \State $optimize(m, \L(\mathbf{\hat Y}_t, \mathbf{Y}_t), \alpha)$
+        \State $optimize(m, L(\mathbf{\hat Y}_t, \mathbf{Y}_t), \alpha)$
       \EndFor
       \Statex
-      \State $\mathbf{X}_v, \mathbf{Y}_v \gets V$\Comment{validate}
+      \State $\mathbf{X}_v, \mathbf{Y}_v \gets V$\Comment{2. validate}
       \State $\mathbf{\hat Y}_v \gets m(\mathbf{X}_v)$
       \State $a \gets accuracy(\mathbf{\hat Y}_v, \mathbf{Y}_v)$
       \Statex
-      \If{$a > best.last$}\Comment{keep best model}
+      \If{$a > best.last$}\Comment{keep best checkpoint}
         \State $m_e \gets copy(m)$
         \State $best.push(m_e)$
       \EndIf
-      \Statex
-      \State $ e \pluseq 1$
-      \Statex
-    \EndWhile
+    \EndFor
   \EndFor
+  \Statex
 \State \textbf{return} $best$
 \EndFunction
 

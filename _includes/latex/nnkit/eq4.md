@@ -1,7 +1,7 @@
 {% latex
   eq4;
   Eq 4.;
-  Gradient Descent with momentum.
+  Gradient Descent with momentum (shown for a single parameter theta).
 %}
 \documentclass[border=2pt]{standalone}
 \usepackage{amsmath}

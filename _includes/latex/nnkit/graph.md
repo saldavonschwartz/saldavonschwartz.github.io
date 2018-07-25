@@ -1,7 +1,7 @@
 {% latex
   graph;
   Figure 2.;
-  3-class, 3-3 classifier computation graph. Superscripts = (implicit) layers. Subscripts = variable dimensions. Output transposed for legibility.
+  3-class, 3-3 classifier computation graph. Superscripts = layer indices. Subscripts = variable dimensions. Output transposed for legibility.
 %}
 \documentclass[tikz, border=0pt]{standalone}
 \usepackage{amsmath}

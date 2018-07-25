@@ -81,13 +81,22 @@
 
 <p>NNKit is an extensible framework for building and training neural networks. It provides a collection of nodes to implement dynamic net topologies as well as optimizers to train these networks and a few other helper algorithms for things such as mini batch partitioning.</p>
 
-<p>The motivation for creating my own framework as opposed to using an existing one like PyTorch or Tensorflow was to study neural networks from the ground up, both from a theoretical and practical perspective.</p>
+<p>The motivation for creating my own framework as opposed to using an existing one like PyTorch or Tensorflow was to study neural networks from the ground up, both from a theoretical and practical perspective. As such, the framework is still under development.</p>
+
+<p><strong>A note about mathematical conventions:</strong>
+Contrary to the more popular mathematical convention, NNKit vectors (and therefore vectors in this post) are assumed to be row-oriented by default. This stems from two personal preferences:</p>
+<ul>
+  <li>It makes the input to a neural net consistent regardless of it being a single datapoint or a design matrix of n data points. That is, a single datapoint <script type="math/tex">\mathbf{x} \in \mathbb{R}^f</script> is of dimension <script type="math/tex">1\times f</script> and a sample of n points <script type="math/tex">\mathbf{X} \in \mathbb{R}^{n\times f}</script> has dimentions <script type="math/tex">n\times f</script>; datapoints in the design matrix are not <script type="math/tex">\mathbf{x}^T</script></li>
+  <li>It allows laying out (and thinking about) the dimensions of weight matrices for a whole layer as <script type="math/tex">in \times out</script>.</li>
+</ul>
+
+<p>This being said, at some point I might switch the framework to column-oriented convention.</p>
 
 <h3 id="computation-graphs"><a class="toc_item" name="2"></a>Computation Graphs:</h3>
 
 <p>NNKit is based around the concept of computation graphs. A computation graph is a general way of describing an arbitrary computation or function as a composition of individual operations.</p>
 
-<p>For example, Figure 1 shows a hypothetical 3-class classifier as a neural network. The network has a 3-3 topology, meaning 2 layers (excluding inputs) and 3 units per layer. As is customary in neural net diagrams, each unit or ‘neuron’ is assumed to perform a weighted linear combination followed by a nonlinear transformation (i.e.: the activation function). In this example the first layer uses ReLU activations and the second uses Softmax, so outputs of the network can be interpreted as the probability that an input maps to one of three classes. Each layer also has a dummy constant input of 1 to add a <em>bias</em> term into each layer’s linear combination.</p>
+<p>For example, Figure 1 shows a hypothetical 3-class classifier as a neural network. The network has a 3-3 topology, meaning 2 layers (excluding inputs) and 3 units per layer. As is customary in neural net diagrams, each unit or ‘neuron’ is assumed to perform a weighted linear combination followed by a nonlinear transformation (i.e.: the activation function). In this example the first layer uses ReLU activations and the second uses Softmax, so outputs of the network can be interpreted as the probability that an input maps to one of three classes. Each layer also has a dummy constant input of 1 to add a <em>bias</em> term into each unit’s linear combination.</p>
 
 <table>
           <tr>
@@ -96,7 +105,7 @@
                 <img src="/assets/images/nnkit/nn.svg" alt="" />
                 <figcaption><strong>
   Figure 1.</strong> 
-  3-class, 3-3 classifier neural net. Superscripts = layer index, subscripts = units.
+  3-class, 3-3 classifier neural net. Superscripts = layer indices, subscripts = units.
   Constant dummy nodes are inserted to multiply the bias terms
 </figcaption>
             </figure>
@@ -104,14 +113,14 @@
           </tr>
         </table>
 
-<p>In NNKit, the same classifier would instead be described as a vectorized computation graph (Figure 2). This representation has two main differences with the one in Figure 1:</p>
+<p>In NNKit, the same classifier would instead be described as a <em>vectorized</em> computation graph (Figure 2). This representation has two main differences with the one in Figure 1:</p>
 
 <ul>
   <li>
-    <p>The neuron computation is broken down into its constituent operations: multiplication, addition of bias and nonlinear activation. This means a layer is made up of a sequence of operations. A general computation graph would also decompose activations into primitive operations but I chose to implement these as atomic operations.</p>
+    <p>Neuron computations are broken down into its constituent operations, each with as a separate node: multiplication, addition of bias and nonlinear activation. A computation graph in general could also decompose activations into primitive operations but I chose to implement these as atomic operations.</p>
   </li>
   <li>
-    <p>There are no individual neurons nor explicit layers. Instead, there are variables and operations and combinations of these allow thinking of blocks of computation as implicit layers with <em>shapes</em> such as 2-in to 3-out. In terms of implementation, computations equivalent to those of multiple neurons in a layer are then packed into tensors and carried out in parallel.</p>
+    <p>Nodes for variables and operations are multidimensional. This allows to pack the equivalent of a layer’s several neurons into tensors and carry them out in parallel (only thru SIMD instructions in numpy as of now, but perhaps via GPUs in the future). Another observation from the vectorized quality of the graph is that it allows thinking about blocks of computation as implicit layers with <em>shapes</em> such as 2-in to 3-out, given by the shapes of the variable nodes.</p>
   </li>
 </ul>
 
@@ -122,7 +131,7 @@
                 <img src="/assets/images/nnkit/graph.svg" alt="" />
                 <figcaption><strong>
   Figure 2.</strong> 
-  3-class, 3-3 classifier computation graph. Superscripts = (implicit) layers. Subscripts = variable dimensions. Output transposed for legibility.
+  3-class, 3-3 classifier computation graph. Superscripts = layer indices. Subscripts = variable dimensions. Output transposed for legibility.
 </figcaption>
             </figure>
             </td>
@@ -135,10 +144,10 @@
 
 <ul>
   <li>
-    <p><strong>variables</strong> hold a value in their <code class="highlighter-rouge">data</code> property and this value can be arbitrarily set. They also have a <code class="highlighter-rouge">g</code> attribute (for gradient) which after a backprop pass holds the gradient of the computation graph output w.r.t the variable. Examples of variables are inputs to a graph or parameters such as weights and biases.</p>
+    <p><strong>variables</strong> hold a value in their <code class="highlighter-rouge">data</code> property and this value can be arbitrarily set. They also have a <code class="highlighter-rouge">g</code> attribute (for gradient) which after a backward pass holds the gradient of the computation graph w.r.t the variable. Examples of variables are inputs to a graph or parameters such as weights and biases.</p>
   </li>
   <li>
-    <p><strong>operators</strong> are <code class="highlighter-rouge">NetVar</code> subclasses whose value is automatically (and only once) derived on instance initialization from their operands, which are other variables passed to the initializer. Examples of operators are multiplication, addition, ReLU and Softmax.</p>
+    <p><strong>operators</strong> are <code class="highlighter-rouge">NetVar</code> subclasses whose value is automatically (and only once) derived on instance initialization from their operands, which are other variables passed to their initializer. Examples of operators are multiplication, addition, ReLU and Softmax.</p>
   </li>
 </ul>
 
@@ -146,15 +155,15 @@
 
 <h4 id="graphs-are-implicit">Graphs are Implicit:</h4>
 
-<p>There is no graph class in the framework. Instead, as operators are instantiated with other nodes as arguments they keep references to their parents, implicitly defining a dependency graph (Figure 2) from which to later back propagate gradients. This being said, it is easy to create convenience wrapper classes for graphs. The framework for instance includes a <code class="highlighter-rouge">FFN</code> (feed-forward network) convenience class.</p>
+<p>There is no graph class in the framework. Instead, as operators are instantiated with other nodes as arguments they keep references to their parents, implicitly defining a dependency graph (Figure 2) thru which gradients will backpropagate. This being said, it is easy to create convenience wrapper classes for graphs or neural net types. The framework for instance includes a <code class="highlighter-rouge">FFN</code> (feed-forward network) convenience class.</p>
 
 <h4 id="graphs-are-dynamic">Graphs are Dynamic:</h4>
 
-<p>Because operators compute their value only once on initialization, in order to compute successive forward passes for a graph one must keep parameter variables around and continuously re-instantiate operator nodes, which upon instantiation will hold the value of the forward pass up to that point in their <code class="highlighter-rouge">data</code> property. This mechanism makes graphs dynamic, since their topology can change between passes depending on which operators are instantiated. This is very useful for sequential models of varying input length for example.</p>
+<p>Because operators compute their value only once on initialization, one must re-instantiate operators on each pass and keep <em>parameter</em> variables between passes, to pass them in to the operators. This also means that upon instantiation, a node will hold the value of the forward pass up to that point in their <code class="highlighter-rouge">data</code> property. This mechanism makes the implied graphs dynamic, since their topology can change between passes depending on which operators are instantiated. This is very useful for sequential models of varying input length for example.</p>
 
 <h3 id="forward-and-backward-passes"><a class="toc_item" name="4"></a>Forward and Backward Passes:</h3>
 
-<p>Eq. 1 defines the 3-class classifier for earlier and Eq. 2 shows its decomposition into individual operators and variables:</p>
+<p>Eq. 1 defines the 3-class classifier for earlier and Eq. 2 shows its decomposition into individual operators and variables, this time from a functional point of view:</p>
 
 <table>
           <tr>
@@ -225,7 +234,7 @@
         </table>
 
 <h4 id="backward-pass">Backward Pass:</h4>
-<p>The backward pass is computed by calling <code class="highlighter-rouge">back()</code> on any operator. This causes each operator to apply chain rule and compute the gradient of its <code class="highlighter-rouge">data</code> w.r.t. its parents (accessible thru each node’s <code class="highlighter-rouge">g</code>). Since it’s possible to call <code class="highlighter-rouge">back()</code> on any operator, it’s possible to do backpropagation for a subgraph of a larger graph, though typically <code class="highlighter-rouge">back()</code> is just called on the last node in a graph.</p>
+<p>The backward pass is computed by calling <code class="highlighter-rouge">back()</code> on any operator. This causes each operator (starting from the one <code class="highlighter-rouge">back()</code> was called on) to compute the gradient of itself w.r.t. its parents and apply chain rule. Each node’s gradient is then accessible thru its <code class="highlighter-rouge">g</code> attribute. Since it’s possible to call <code class="highlighter-rouge">back()</code> on any operator, it’s possible to do backpropagation for a subgraph of a larger graph, though typically <code class="highlighter-rouge">back()</code> is just called on the last node in a graph.</p>
 
 <table>
           <tr>
@@ -242,7 +251,7 @@
           </tr>
         </table>
 
-<p>Eq. 3 shows the forward and backward pass computations at the operator level, for a <code class="highlighter-rouge">Multiply</code> node implementing a 2-in, 3-out layer (equivalent to the output of three neurons). Code 2 shows the implementation of this node in NNKit and hints to how it’s possible to extend the framework with additional operators.</p>
+<p>Eq. 3 shows the forward and backward pass computations at the operator level, for a <code class="highlighter-rouge">Multiply</code> node implementing a 2-in, 3-out layer (equivalent to the output of three neurons). As noted before, the operator itself has no concept of dimension. The 2-in, 3-out shape is actually derived from the operand shapes in this particular case. Code 2 shows the implementation of this node in NNKit and hints to how it’s possible to extend the framework with additional operators.</p>
 
 <table>
           <tr>
@@ -283,7 +292,9 @@
 
 <h3 id="optimizers"><a class="toc_item" name="5"></a>Optimizers:</h3>
 
-<p>Optimizers are algorithms that minimize some notion of distance or error between a graph’s output (i.e.: a model’s hypothesis) and a target. An optimization step consists of nudging model <em>parameters</em> (denoted <script type="math/tex">\theta</script>) in the direction opposite of the gradient of the network output w.r.t. the parameters. In NNKit a parameter is simply any <code class="highlighter-rouge">NetVar</code> passed to an optimizer for which derivatives have been computed.</p>
+<p>Optimizers are algorithms that minimize some notion of distance or error between a graph’s output (i.e.: a model’s hypothesis) and a target. This notion of distance is given by a loss function (sometimes called a cost function when averaging or summing multiple losses).</p>
+
+<p>An optimization step consists of nudging model <em>parameters</em> (denoted <script type="math/tex">\theta</script>) in the direction opposite of the gradient of the loss function w.r.t. the parameters. In NNKit a parameter is simply any <code class="highlighter-rouge">NetVar</code> passed to an optimizer for which derivatives have been computed.</p>
 
 <p>As an example, Eq 4. defines <strong>Gradient Descent with momentum</strong> and Code 3 shows this optimizer as implemented in NNKit.</p>
 
@@ -294,7 +305,7 @@
                 <img src="/assets/images/nnkit/eq4.svg" alt="" />
                 <figcaption><strong>
   Eq 4.</strong> 
-  Gradient Descent with momentum.
+  Gradient Descent with momentum (shown for a single parameter theta).
 </figcaption>
             </figure>
             </td>
@@ -313,7 +324,7 @@
     . learnRate: α ∈ [0,1]
     how big of an adjustment each parameter undergoes during an optimization step.
 
-    . momentum: β1 ∈ [0,1]
+    . momentum: β1 ∈ [0,1)
     over how many samples the exponential moving average m takes place.
     If set to 0 momentum is disabled and the algorithm becomes simply gradient descent.
     """</span>
@@ -330,7 +341,9 @@
 </code></pre></div></div>
 <figcaption><strong>Code 3:</strong> NNKit implementation of gradient descent with momentum.</figcaption>
 
-<p>NNKit currently implements <strong>Gradient Descent with momentum</strong> and <strong>Adam</strong> (which degenerates to <strong>RMSProp</strong> if momentum is set to 0.). Code 4 shows an example very similar to the one in Code 1 but using the <code class="highlighter-rouge">FFN</code> convenience class along with an optimizer and a loss node. It’s worth noting that even though the <code class="highlighter-rouge">FFN</code> class has a <code class="highlighter-rouge">vars</code> property, the network’s parameters could have just been declared outside the network instance and passed directly to the optimizer.</p>
+<p>NNKit currently implements <strong>Gradient Descent with momentum</strong> and <strong>Adam</strong> (which degenerates to <strong>RMSProp</strong> if momentum is set to 0.). Code 4 shows an example very similar to the one in Code 1 but using the <code class="highlighter-rouge">FFN</code> convenience class along with an optimizer and a loss node.</p>
+
+<p>The loss node can be appended to the graph as shown in the code, which could make sense from a computation graph point of view, but it can also be used standalone, resembling the functional notation in Eq. 4. It’s also worth noting that even though the <code class="highlighter-rouge">FFN</code> class has a <code class="highlighter-rouge">vars</code> property, the network’s parameters could have just been declared outside the network instance and passed directly to the optimizer.</p>
 
 <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">nnkit</span> <span class="k">as</span> <span class="n">nn</span>
 
@@ -350,7 +363,7 @@
 <span class="c"># 3. create optimizer and pass parameters to optimize:</span>
 <span class="n">optimizer</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">GD</span><span class="p">(</span><span class="n">net</span><span class="o">.</span><span class="nb">vars</span><span class="p">)</span>
 
-<span class="c"># 4. add loss node at the end of the net to optimize against:</span>
+<span class="c"># 4. add cross-entropy loss node at the end of the net to optimize against:</span>
 <span class="n">target</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">NetVar</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
 <span class="n">net</span><span class="o">.</span><span class="n">topology</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">nn</span><span class="o">.</span><span class="n">CELoss</span><span class="p">,</span> <span class="n">target</span><span class="p">))</span>
 

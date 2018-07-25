@@ -1,7 +1,7 @@
 {% latex
   ios;
   Figure 8.;
-  Diagram of iOS app combining ROI extraction + normalization and the trained model.
+  Diagram of iOS app combining ROI extraction + feature processing and the trained model.
 %}
 \documentclass[tikz, border=0pt]{standalone}
 \usetikzlibrary{shapes, arrows, calc}
@@ -18,8 +18,8 @@
   \node [inner sep=5pt, right of=1, rectangle, draw, thick, rounded corners, minimum size=45pt, text centered]
   (2) {ROI extraction};
 
-  \node [inner sep=5pt, right of=2, rectangle, draw, thick, rounded corners, minimum size=45pt, text centered]
-  (3) {normalization};
+  \node [inner sep=5pt, right of=2, rectangle, draw, thick, rounded corners, minimum size=45pt, text centered, align=center]
+  (3) {feature\\processing};
 
   \node [inner sep=5pt, right of=3, rectangle, draw, thick, rounded corners, minimum size=45pt, text centered, align=center]
   (4) {predict\\largest\ ROI};

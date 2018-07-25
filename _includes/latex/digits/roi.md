@@ -1,7 +1,7 @@
 {% latex
   roi;
   Figure 6.;
-  Extracting ROIs (regions of interest) from a camera image. Each ROI is then normalized (Figure 5).
+  Extracting ROIs (regions of interest) from a camera image. Each ROI is then processed as in Figure 5.
 %}
 \documentclass[tikz, border=0pt]{standalone}
 \usetikzlibrary{shapes,arrows, calc}
@@ -49,7 +49,7 @@
     \node [inner sep=0pt, label=above:ROI] (8) at (\XCoord + 10pt, \YCoord + 130pt) {\includegraphics[width=20px]
       {assets/images/digits/7-07-10-roi.png}};
 
-      \node [inner sep=0pt, right of=8] (9) {NORMALIZATION};
+      \node [inner sep=0pt, right of=8, text centered, align=center] (9) {feature\\processing};
 
     % Draw edges
     \path [draw, thick, -latex'] (1) -- (2);

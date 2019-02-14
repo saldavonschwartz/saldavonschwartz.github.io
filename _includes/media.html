@@ -18,7 +18,9 @@
         {% if types[forloop.index0] == "1" %}
         <img style="width: {{size[0]}}; height: {{size[1]}};" src="{{ site.url | absolute_path}}/assets/images/{{ source }}" alt="">
         {% elsif types[forloop.index0] == "2" %}
-        <iframe width="{{size[0]}}"  height="{{size[1]}}" src="{{ source }}" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+        <div class="container">
+        <iframe src="{{ source }}" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+        </div>
         {% elsif types[forloop.index0] == "3" %}
         <video muted autoplay width="{{size[0]}}" height="{{size[1]}}" loop type="video/mp4" controls>
           <source src="{{ site.url | absolute_path}}/assets/images/{{ source }}">

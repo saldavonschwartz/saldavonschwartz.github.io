@@ -14,8 +14,6 @@
 // // 		$(this).before('<figcaption>' + caption + '</figcaption>');
 // });
 
-
-
 (function($) {
 	skel.breakpoints({
 		xlarge: '(max-width: 1680px)',

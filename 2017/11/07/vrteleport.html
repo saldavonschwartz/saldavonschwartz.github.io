@@ -76,7 +76,7 @@
 
 <h3 id="about"><a class="toc_item" name="1"></a>About:</h3>
 
-<p>VRTeleportComponent is a C++ plugin for Unreal Engine that allows to easily add teleportation capabilities to any pawn in the context of VR. The plugin introduces a new component (<code class="highlighter-rouge">VRTeleportComponent</code>) to the engine, which automatically takes care of a number of things involved in teleporting a player in VR:</p>
+<p>VRTeleportComponent is a C++ plugin for Unreal Engine that allows adding teleportation capabilities to any pawn in the context of VR. The plugin implements an engine component (<code class="highlighter-rouge">VRTeleportComponent</code>) which automatically takes care of a number of things involved in teleportation:</p>
 
 <ul>
   <li>ray-casting and hit-testing (in <em>line</em> or <em>projectile/parabola</em> mode).</li>
@@ -148,13 +148,13 @@
 
 <h3 id="setup-and-customization"><a class="toc_item" name="3"></a>Setup and Customization:</h3>
 
-<p>A basic setup (as the one in Video 1) can be implemented in 4 steps:</p>
+<p>A basic setup (as the one in Video 1) can be achieved in 4 steps:</p>
 
 <ol>
   <li>Start with a pawn with a camera and motion controller, with a cube for the hand mesh (Figure 2).</li>
   <li>Add the teleport component as a child of the motion controller, so it follows the controller (Figure 3).</li>
   <li>Add a decal as a child of the teleport component; the component uses its first child as a marker, if one is present (Figure 3).</li>
-  <li>Hook up a motion controller input (i.e.: the pad in the HTC Vive wand) to the appropriate methods of the teleport component (Figure 4).</li>
+  <li>Connect a controller input (i.e.: the pad in the HTC Vive wand) to the appropriate methods of the teleport component (Figure 4).</li>
 </ol>
 
 <!-- types:
@@ -209,7 +209,7 @@
         <img style="width: 100%; height: 100%;" src="/assets/images/vrteleport/TeleportHook.png" alt="" />
         
         
-        <figcaption><strong>Figure 4.</strong> Hooking up a motion controller (i.e.: HTC Vive wand) to the teleport component.</figcaption>
+        <figcaption><strong>Figure 4.</strong> Connecting a controller input (i.e.: HTC Vive wand pad) to the teleport component.</figcaption>
         
     </figure>
     </td>

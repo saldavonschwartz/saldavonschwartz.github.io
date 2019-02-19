@@ -119,7 +119,7 @@
 </table>
 
 <h3 id="learning-mnist"><a class="toc_item" name="2"></a>Learning MNIST:</h3>
-<p>I trained different combinations of network topologies and hyperparameters (Tables 1 and 2) on the whole MNIST train set and used the first half of the test set (5K examples) for validation, setting aside the other half for testing. At the end of each training epoch I measured validation accuracy and kept the five best checkpoints across all epochs based on this performance measure (Algorithm 1).</p>
+<p>I trained different combinations of network topologies and batch sizes (Tables 1 and 2) on the whole MNIST train set and used the first half of the test set (5K examples) for validation, setting aside the other half for testing. At the end of each training epoch I measured validation accuracy and kept the five best checkpoints across all epochs based on this performance measure (Algorithm 1).</p>
 
 <div style="overflow-x: auto;">
   <table>
@@ -353,7 +353,7 @@
 </div>
 <figcaption><strong>Table 4.</strong> Testing results on the remaining 5K examples in the MNIST test set.</figcaption>
 
-<p>For a baseline, I relied on error rates for similar network architectures as reported in the MNIST website, which I transcribed in Table 5. This transcribed table does not include entries where the raw features were augmented since I used raw features. Given this table, my test results were very satisfactory.</p>
+<p>For a baseline, I relied on error rates for similar network architectures as reported in the MNIST website, which I partially reproduced in Table 5. This table does not include entries where the input to the network was augmented in some way, since I used raw features. Given this table, my test results were very satisfactory.</p>
 
 <table>
   <thead>
@@ -408,12 +408,11 @@
 
 <h3 id="testing-custom-images"><a class="toc_item" name="4"></a>Testing Custom Images:</h3>
 
-<p>I tested the models on photographs of handwritten digits taken with an iPhone to mimic the conditions under which the final model would perform. To my surprise my first tests yielded very poor performance. The reason for this is that images in the MNIST set are actually preprocessed. From their website:</p>
+<p>I also tested the models on photographs of handwritten digits taken with an iPhone to mimic the conditions under which the final model would perform. Before testing, the iPhone photographs were preprocessed following a similar approach to the one described in the MNIST website:</p>
+
 <blockquote>
   <p>The original black and white (bilevel) images from NIST were size normalized to fit in a 20x20 pixel box while preserving their aspect ratio. The resulting images contain grey levels as a result of the anti-aliasing technique used by the normalization algorithm. the images were centered in a 28x28 image by computing the center of mass of the pixels, and translating the image so as to position this point at the center of the 28x28 field.</p>
 </blockquote>
-
-<p>The website description does not mention a specific mean or variance (these could have been used to center and normalize test images more precisely), but based on the description provided, I implemented a similar processing step in OpenCV (Figure 5).</p>
 
 <table>
           <tr>
@@ -429,9 +428,13 @@
           </tr>
         </table>
 
-<p>By processing raw pixels in this way, model 5 correctly predicted all photographs and models 1 thru 4 correctly predicted all but one. Model 5 was also the smallest model which made it more attractive for mobile deployment (2.2MB vs 7.3MB). So at this point I decided on model 5 as the final model for deployment.</p>
+<p>By processing raw pixels in this way, model 5 correctly predicted all photographs and models 1 thru 4 correctly predicted all but one. Model 5 was also the smallest model, which made it more attractive for mobile deployment (2.2MB vs 7.3MB). So at this point I decided on model 5 for deployment.</p>
 
-<p>A separate issue related to deployment was that real photographs taken in the iOS app would likely contain other elements in the scene besides digits, so in some cases it wouldn’t make sense to make a prediction from an image as a whole. I partially addressed this by implementing a ROI (region of interest) extraction step before preprocessing and running prediction on the these regions instead (Figure 6).</p>
+<h3 id="deploying-to-ios"><a class="toc_item" name="5"></a>Deploying to iOS:</h3>
+
+<p>I implemented an iOS app capable of taking photographs and running prediction on them. To import and run the trained model in the app, I re-implemented a forward-only subset of NNKit (originally written in Python) in C++.</p>
+
+<p>Photographs taken in the iOS app however could contain other elements in the scene besides digits, so running prediction on a whole image did not always make sense. I partially addressed this by implementing a ROI (region of interest) extraction step before preprocessing and running prediction on the these ROIs instead (Figure 6).</p>
 
 <table>
           <tr>
@@ -447,7 +450,7 @@
           </tr>
         </table>
 
-<p>As an example, Figure 7 shows the result of preprocessing an image as described above and running prediction on ROIs with model 5. The 7 was correctly classified but since ROI extraction is merely based on edge detection, several non-digit ROIs were also sent to the model. For the purposes of this project however, I decided this was fine.</p>
+<p>As an example, Figure 7 shows the result of preprocessing an image as described above and running prediction on ROIs. The <strong>7</strong> is correctly classified but since ROI extraction is merely based on edge detection, several non-digit ROIs were also sent to the model.</p>
 
 <!-- types:
 1:  local images.
@@ -473,10 +476,7 @@
   </tr>
 </table>
 
-<h3 id="deploying-to-ios"><a class="toc_item" name="5"></a>Deploying to iOS:</h3>
-<p>I implemented an app capable of importing the trained model and processing photographs taken in the app as previously described, in order to run prediction on the resulting ROIs (Figure 8). To import and run the trained model, I re-implemented a forward-only subset of NNKit (originally written in Python) in C++.</p>
-
-<p>The app also uses two mechanisms to partially mitigate the issue of multiple ROIs per image. Photographs are cropped to a focus area, reducing the number of ROIs. Also, a modified version of the ROI extraction algorithm returns contours in decreasing order of bounding box area and the app only runs prediction on the largest one. This stems from the assumption that the digit being recognized is likely to have the largest bounding box within the focus area.</p>
+<p>Finally, I implemented to additional measures to further mitigate the issue of multiple ROIs per image. First, the app crops photographs to within a smaller focus area, reducing the number of ROIs. Second, the ROI algorithm returns contours in decreasing order of bounding box area and the app only runs prediction on the largest one. This stems from the assumption that the digit being recognized is likely to have the largest bounding box within the focus area. Figure 8 shows a diagram of the complete processing pipeline in the app.</p>
 
 <table>
           <tr>

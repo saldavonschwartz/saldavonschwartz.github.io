@@ -79,9 +79,7 @@
 
 <h3 id="about"><a class="toc_item" name="1"></a>About:</h3>
 
-<p>NNKit is an extensible framework for building and training neural networks. It provides a collection of nodes to implement dynamic net topologies as well as optimizers to train these networks and a few other helper algorithms for things such as mini batch partitioning.</p>
-
-<p>The motivation for creating my own framework as opposed to using an existing one like PyTorch or Tensorflow was to study neural networks from the ground up, both from a theoretical and practical perspective. As such, the framework is still under development.</p>
+<p>NNKit is a framework for building and training neural networks. It provides a collection of nodes to implement dynamic net topologies as well as optimizers to train these networks and a few other helper algorithms for things such as mini batch partitioning.</p>
 
 <p><strong>A note about mathematical conventions:</strong>
 Contrary to the more popular mathematical convention, NNKit vectors (and therefore vectors in this post) are assumed to be row-oriented by default. This stems from two personal preferences:</p>
@@ -94,9 +92,9 @@ Contrary to the more popular mathematical convention, NNKit vectors (and therefo
 
 <h3 id="computation-graphs"><a class="toc_item" name="2"></a>Computation Graphs:</h3>
 
-<p>NNKit is based around the concept of computation graphs. A computation graph is a general way of describing an arbitrary computation or function as a composition of individual operations.</p>
+<p>NNKit is based around the concept of computation graphs. A computation graph is a general way of describing an arbitrary function as a composition of individual operations.</p>
 
-<p>For example, Figure 1 shows a hypothetical 3-class classifier as a neural network. The network has a 3-3 topology, meaning 2 layers (excluding inputs) and 3 units per layer. As is customary in neural net diagrams, each unit or ‘neuron’ is assumed to perform a weighted linear combination followed by a nonlinear transformation (i.e.: the activation function). In this example the first layer uses ReLU activations and the second uses Softmax, so outputs of the network can be interpreted as the probability that an input maps to one of three classes. Each layer also has a dummy constant input of 1 to add a <em>bias</em> term into each unit’s linear combination.</p>
+<p>For example, Figure 1 shows a hypothetical 3-class classifier as a neural network diagram. The network has a 3-3 topology, meaning 2 layers (excluding inputs) and 3 units per layer. As is customary in neural net diagrams, each ‘neuron’ performs a weighted linear combination of its inputs followed by a nonlinear transformation (i.e.: the activation function). In this example the first layer uses ReLU activations and the second uses Softmax, so outputs of the network can be interpreted as the probability that an input to the net maps to one of three classes. Each layer also has a dummy constant input of 1 to add a <em>bias</em> term into each linear combination.</p>
 
 <table>
           <tr>
@@ -113,7 +111,7 @@ Contrary to the more popular mathematical convention, NNKit vectors (and therefo
           </tr>
         </table>
 
-<p>In NNKit, the same classifier would instead be described as a <em>vectorized</em> computation graph (Figure 2). This representation has two main differences with the one in Figure 1:</p>
+<p>In NNKit, the same classifier is described as a <em>vectorized</em> computation graph (Figure 2). This representation has two main differences with the one in Figure 1:</p>
 
 <ul>
   <li>
@@ -144,10 +142,10 @@ Contrary to the more popular mathematical convention, NNKit vectors (and therefo
 
 <ul>
   <li>
-    <p><strong>variables</strong> hold a value in their <code class="highlighter-rouge">data</code> property and this value can be arbitrarily set. They also have a <code class="highlighter-rouge">g</code> attribute (for gradient) which after a backward pass holds the gradient of the computation graph w.r.t the variable. Examples of variables are inputs to a graph or parameters such as weights and biases.</p>
+    <p><strong>variables</strong> hold a value in their <code class="highlighter-rouge">data</code> property and this value can be arbitrarily set. They also have a <code class="highlighter-rouge">g</code> attribute (for gradient) which after a backward pass holds the gradient of the computation graph output w.r.t the variable. Examples of variables are inputs to a graph or parameters such as weights and biases.</p>
   </li>
   <li>
-    <p><strong>operators</strong> are <code class="highlighter-rouge">NetVar</code> subclasses whose value is automatically (and only once) derived on instance initialization from their operands, which are other variables passed to their initializer. Examples of operators are multiplication, addition, ReLU and Softmax.</p>
+    <p><strong>operators</strong> are <code class="highlighter-rouge">NetVar</code> subclasses for which the <code class="highlighter-rouge">data</code> property is automatically (and only once) derived on instance initialization from their operands, which are other variables passed to their initializer. Examples of operators are multiplication, addition, ReLU and Softmax.</p>
   </li>
 </ul>
 
@@ -155,15 +153,15 @@ Contrary to the more popular mathematical convention, NNKit vectors (and therefo
 
 <h4 id="graphs-are-implicit">Graphs are Implicit:</h4>
 
-<p>There is no graph class in the framework. Instead, as operators are instantiated with other nodes as arguments they keep references to their parents, implicitly defining a dependency graph (Figure 2) thru which gradients will backpropagate. This being said, it is easy to create convenience wrapper classes for graphs or neural net types. The framework for instance includes a <code class="highlighter-rouge">FFN</code> (feed-forward network) convenience class.</p>
+<p>There is no graph class in the framework. Instead, as operators are instantiated with other nodes as arguments they keep references to their parents, implicitly defining a dependency graph (Figure 2) thru which gradients will backpropagate. This being said, it is easy to create convenience wrapper classes for graphs or neural net types. The framework includes a <code class="highlighter-rouge">FFN</code> (feed-forward network) convenience class as an example.</p>
 
 <h4 id="graphs-are-dynamic">Graphs are Dynamic:</h4>
 
-<p>Because operators compute their value only once on initialization, one must re-instantiate operators on each pass and keep <em>parameter</em> variables between passes, to pass them in to the operators. This also means that upon instantiation, a node will hold the value of the forward pass up to that point in their <code class="highlighter-rouge">data</code> property. This mechanism makes the implied graphs dynamic, since their topology can change between passes depending on which operators are instantiated. This is very useful for sequential models of varying input length for example.</p>
+<p>Because operators compute their value only once on initialization, one must re-instantiate these on subsequent forward passes, keeping <em>parameters</em> around between passes, in order to persist them. This also means that upon instantiation, a node will hold the value of the forward pass up to that point in the implicit graph. This mechanism makes graph topology dynamic, since it can change between passes depending on which operators are instantiated. This is very useful for sequential models of varying input length for example.</p>
 
 <h3 id="forward-and-backward-passes"><a class="toc_item" name="4"></a>Forward and Backward Passes:</h3>
 
-<p>Eq. 1 defines the 3-class classifier for earlier and Eq. 2 shows its decomposition into individual operators and variables, this time from a functional point of view:</p>
+<p>Eq. 1 defines the 3-class classifier from earlier as a function and Eq. 2 shows its decomposition into individual operators and variables:</p>
 
 <table>
           <tr>
@@ -193,7 +191,7 @@ Contrary to the more popular mathematical convention, NNKit vectors (and therefo
           </tr>
         </table>
 
-<p>Code 1 shows NNKit code equivalent to Eq. 2, where arbitrary values have been assigned to the variables.</p>
+<p>Code 1 shows the NNKit implementation of Eq. 2, where arbitrary values have been assigned to the variables.</p>
 
 <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">nnkit</span> <span class="k">as</span> <span class="n">nn</span>
 
@@ -234,7 +232,7 @@ Contrary to the more popular mathematical convention, NNKit vectors (and therefo
         </table>
 
 <h4 id="backward-pass">Backward Pass:</h4>
-<p>The backward pass is computed by calling <code class="highlighter-rouge">back()</code> on any operator. This causes each operator (starting from the one <code class="highlighter-rouge">back()</code> was called on) to compute the gradient of itself w.r.t. its parents and apply chain rule. Each node’s gradient is then accessible thru its <code class="highlighter-rouge">g</code> attribute. Since it’s possible to call <code class="highlighter-rouge">back()</code> on any operator, it’s possible to do backpropagation for a subgraph of a larger graph, though typically <code class="highlighter-rouge">back()</code> is just called on the last node in a graph.</p>
+<p>The backward pass is computed by calling <code class="highlighter-rouge">back()</code> on any operator. This causes each operator (starting from the one <code class="highlighter-rouge">back()</code> was called on) to compute the gradient of itself w.r.t. its parents. Each node’s gradient is then accessible thru its <code class="highlighter-rouge">g</code> attribute. Since it’s possible to call <code class="highlighter-rouge">back()</code> on any operator, it’s possible to do backpropagation for a subgraph of a larger graph, though typically <code class="highlighter-rouge">back()</code> is just called on the last node in a graph.</p>
 
 <table>
           <tr>
@@ -251,7 +249,7 @@ Contrary to the more popular mathematical convention, NNKit vectors (and therefo
           </tr>
         </table>
 
-<p>Eq. 3 shows the forward and backward pass computations at the operator level, for a <code class="highlighter-rouge">Multiply</code> node implementing a 2-in, 3-out layer (equivalent to the output of three neurons). As noted before, the operator itself has no concept of dimension. The 2-in, 3-out shape is actually derived from the operand shapes in this particular case. Code 2 shows the implementation of this node in NNKit and hints to how it’s possible to extend the framework with additional operators.</p>
+<p>Eq. 3 shows the forward and backward pass computations at the operator level for a <code class="highlighter-rouge">Multiply</code> node implementing a 2-in, 3-out layer (equivalent to the output of three neurons). As noted before, the operator itself has no concept of dimension. The 2-in, 3-out shape is actually derived from the operand shapes in this particular case. Code 2 shows the implementation of this node in NNKit and hints to how it’s possible to extend the framework with additional operators.</p>
 
 <table>
           <tr>
@@ -292,7 +290,7 @@ Contrary to the more popular mathematical convention, NNKit vectors (and therefo
 
 <h3 id="optimizers"><a class="toc_item" name="5"></a>Optimizers:</h3>
 
-<p>Optimizers are algorithms that minimize some notion of distance or error between a graph’s output (i.e.: a model’s hypothesis) and a target. This notion of distance is given by a loss function (sometimes called a cost function when averaging or summing multiple losses).</p>
+<p>Optimizers are algorithms that minimize some notion of distance or error between a graph’s output and a target. This notion of distance is given by a loss function (sometimes called a cost function when averaging or summing multiple losses).</p>
 
 <p>An optimization step consists of nudging model <em>parameters</em> (denoted <script type="math/tex">\theta</script>) in the direction opposite of the gradient of the loss function w.r.t. the parameters. In NNKit a parameter is simply any <code class="highlighter-rouge">NetVar</code> passed to an optimizer for which derivatives have been computed.</p>
 
@@ -374,7 +372,7 @@ Contrary to the more popular mathematical convention, NNKit vectors (and therefo
     <span class="c"># 5.a forward pass: instantiate all operators (variables are persisted from step 2):</span>
     <span class="n">loss</span> <span class="o">=</span> <span class="n">net</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
 
-    <span class="c"># 5.b backprop: compute gradient w.r.t. loss:</span>
+    <span class="c"># 5.b backprop: compute loss output w.r.t parameters:</span>
     <span class="n">net</span><span class="o">.</span><span class="n">back</span><span class="p">()</span>
 
     <span class="c"># 5.c optimize parameters:</span>

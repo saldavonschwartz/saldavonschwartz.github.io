@@ -17,7 +17,7 @@
   \node[state]          (2) [below right of=0] {\normalsize $Teleporting$};
 
   \path (0) edge              node {$\frac{\text{StartProbing}}{\text{OnStartProbing}}$} (1)
-            edge              node {$\frac{\text{TeleportToLastProbedLocation, TeleportToLocation}}{\text{OnStartTeleporting}}$} (2)
+            edge              node {$\frac{\text{TeleportToLastProbedLocation} \mid \text{TeleportToLocation}}{\text{OnStartTeleporting}}$} (2)
         (1) edge [loop right] node {$\frac{\epsilon}{\text{OnProbing}}$} (1)
             edge [bend left]  node {$\frac{\text{EndProbing}}{\text{OnEndProbing}}$} (0)
         (2) edge [bend left]  node {$\frac{\epsilon}{\text{OnEndTeleporting}}$} (0);

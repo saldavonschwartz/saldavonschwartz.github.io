@@ -24,7 +24,7 @@
 
 <!-- Header -->
 <header id="header"  class="post" >
-	<a href="/" class="logo"><strong>0XFEDE</strong> <span class="logo-sub">Federico Saldarini</span></a>
+	<a href="http://localhost:4000//" class="logo"><strong>0XFEDE</strong> <span class="logo-sub">Federico Saldarini</span></a>
 	<!-- <nav>
 		<a class="logo-sub" href="#menu">Menu</a>
 	</nav> -->
@@ -35,7 +35,7 @@
 	<ul class="links">
         
 		    
-		        <li><a href="/">Home</a></li>
+		        <li><a href="http://localhost:4000//">Home</a></li>
 	    	
 		
 		    
@@ -76,7 +76,7 @@
 
 <h3 id="about"><a class="toc_item" name="1"></a>About:</h3>
 
-<p>VRTeleportComponent is a C++ plugin for Unreal Engine that allows to easily add teleportation capabilities to any pawn in the context of VR. The plugin introduces a new component (<code class="highlighter-rouge">VRTeleportComponent</code>) to the engine, which automatically takes care of a number of things involved in teleporting a player in VR:</p>
+<p>VRTeleportComponent is a C++ plugin for Unreal Engine that allows adding teleportation capabilities to any pawn in the context of VR. The plugin implements an engine component (<code class="highlighter-rouge">VRTeleportComponent</code>) which automatically takes care of a number of things involved in teleportation:</p>
 
 <ul>
   <li>ray-casting and hit-testing (in <em>line</em> or <em>projectile/parabola</em> mode).</li>
@@ -148,13 +148,13 @@
 
 <h3 id="setup-and-customization"><a class="toc_item" name="3"></a>Setup and Customization:</h3>
 
-<p>A basic setup (as the one in Video 1) can be implemented in 4 steps:</p>
+<p>A basic setup (as the one in Video 1) can be achieved in 4 steps:</p>
 
 <ol>
   <li>Start with a pawn with a camera and motion controller, with a cube for the hand mesh (Figure 2).</li>
   <li>Add the teleport component as a child of the motion controller, so it follows the controller (Figure 3).</li>
   <li>Add a decal as a child of the teleport component; the component uses its first child as a marker, if one is present (Figure 3).</li>
-  <li>Hook up a motion controller input (i.e.: the pad in the HTC Vive wand) to the appropriate methods of the teleport component (Figure 4).</li>
+  <li>Connect a controller input (i.e.: the pad in the HTC Vive wand) to the appropriate methods of the teleport component (Figure 4).</li>
 </ol>
 
 <!-- types:
@@ -170,7 +170,7 @@
     <td style="border: none; width: 50%;">
     <figure>
         
-        <img style="width: 100%; height: 100%;" src="/assets/images/vrteleport/PawnNoTeleport.png" alt="" />
+        <img style="width: 100%; height: 100%;" src="http://localhost:4000/assets/images/vrteleport/PawnNoTeleport.png" alt="" />
         
         
         <figcaption><strong>Figure 2.</strong> Pawn without teleport component.</figcaption>
@@ -182,7 +182,7 @@
     <td style="border: none; width: 50%;">
     <figure>
         
-        <img style="width: 100%; height: 100%;" src="/assets/images/vrteleport/PawnTeleport.png" alt="" />
+        <img style="width: 100%; height: 100%;" src="http://localhost:4000/assets/images/vrteleport/PawnTeleport.png" alt="" />
         
         
         <figcaption><strong>Figure 3.</strong> Pawn with teleport component and decal as a marker.</figcaption>
@@ -206,10 +206,10 @@
     <td style="border: none; width: 100%;">
     <figure>
         
-        <img style="width: 100%; height: 100%;" src="/assets/images/vrteleport/TeleportHook.png" alt="" />
+        <img style="width: 100%; height: 100%;" src="http://localhost:4000/assets/images/vrteleport/TeleportHook.png" alt="" />
         
         
-        <figcaption><strong>Figure 4.</strong> Hooking up a motion controller (i.e.: HTC Vive wand) to the teleport component.</figcaption>
+        <figcaption><strong>Figure 4.</strong> Connecting a controller input (i.e.: HTC Vive wand pad) to the teleport component.</figcaption>
         
     </figure>
     </td>
@@ -232,7 +232,7 @@
     <td style="border: none; width: 100%;">
     <figure>
         
-        <img style="width: 100%; height: auto;" src="/assets/images/vrteleport/CustomizeExample.png" alt="" />
+        <img style="width: 100%; height: auto;" src="http://localhost:4000/assets/images/vrteleport/CustomizeExample.png" alt="" />
         
         
         <figcaption><strong>Figure 5.</strong> Bypassing default teleport behavior and implementing custom behavior.</figcaption>
@@ -278,14 +278,14 @@
 </div>
 
 <!-- Scripts -->
-	<script src="/assets/js/jquery.min.js"></script>
-	<script src="/assets/js/jquery.scrolly.min.js"></script>
-	<script src="/assets/js/jquery.scrollex.min.js"></script>
-	<script src="/assets/js/skel.min.js"></script>
-	<script src="/assets/js/util.js"></script>
+	<script src="http://localhost:4000/assets/js/jquery.min.js"></script>
+	<script src="http://localhost:4000/assets/js/jquery.scrolly.min.js"></script>
+	<script src="http://localhost:4000/assets/js/jquery.scrollex.min.js"></script>
+	<script src="http://localhost:4000/assets/js/skel.min.js"></script>
+	<script src="http://localhost:4000/assets/js/util.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
-	<!--[if lte IE 8]><script src="/assets/js/ie/respond.min.js"></script><![endif]-->
-	<script src="/assets/js/main.js"></script>
+	<!--[if lte IE 8]><script src="http://localhost:4000/assets/js/ie/respond.min.js"></script><![endif]-->
+	<script src="http://localhost:4000/assets/js/main.js"></script>
 
 
 </body>

@@ -33,7 +33,6 @@
     \path [draw, thick,  -latex'] (2) -- (3);
     \path [draw, thick,  -latex'] (3) -- (4);
     \path [draw, thick,  -latex'] (4) -- (5);
-    \path[draw, thick,  -latex', rounded corners] (5.north) -- ++(0pt, +20pt) -- ++(-498pt, 0pt) -- (0.north);
     \end{tikzpicture}
 
 \end{document}

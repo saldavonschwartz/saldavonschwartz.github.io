@@ -13,7 +13,7 @@ repo: https://github.com/saldavonschwartz/VRTeleport
 
 ### <a class="toc_item" name="1"></a>About:
 
-VRTeleportComponent is a C++ plugin for Unreal Engine that allows to easily add teleportation capabilities to any pawn in the context of VR. The plugin introduces a new component (`VRTeleportComponent`) to the engine, which automatically takes care of a number of things involved in teleporting a player in VR:
+VRTeleportComponent is a C++ plugin for Unreal Engine that allows adding teleportation capabilities to any pawn in the context of VR. The plugin implements an engine component (`VRTeleportComponent`) which automatically takes care of a number of things involved in teleportation:
 
 - ray-casting and hit-testing (in *line* or *projectile/parabola* mode).
 - avoiding blocking the ray cast with its owning actor.
@@ -53,12 +53,12 @@ Methods that trigger transitions can only execute on the server, to prevent clie
 
 ### <a class="toc_item" name="3"></a>Setup and Customization:
 
-A basic setup (as the one in Video 1) can be implemented in 4 steps:
+A basic setup (as the one in Video 1) can be achieved in 4 steps:
 
 1. Start with a pawn with a camera and motion controller, with a cube for the hand mesh (Figure 2).
 2. Add the teleport component as a child of the motion controller, so it follows the controller (Figure 3).
 3. Add a decal as a child of the teleport component; the component uses its first child as a marker, if one is present (Figure 3).
-4. Hook up a motion controller input (i.e.: the pad in the HTC Vive wand) to the appropriate methods of the teleport component (Figure 4).
+4. Connect a controller input (i.e.: the pad in the HTC Vive wand) to the appropriate methods of the teleport component (Figure 4).
 
 {% include media.html
   sources="vrteleport/PawnNoTeleport.png; vrteleport/PawnTeleport.png"
@@ -73,7 +73,7 @@ A basic setup (as the one in Video 1) can be implemented in 4 steps:
   types="1"
   sizes="100%-100%"
   titles="Figure 4."
-  descriptions="Hooking up a motion controller (i.e.: HTC Vive wand) to the teleport component."
+  descriptions="Connecting a controller input (i.e.: HTC Vive wand pad) to the teleport component."
 %}
 
 For delegate events with a response, you can set the response parameter `ShouldPerformDefaultImplementation` to `false` if you want to bypass the default behavior of the component. An example would be to perform a teleport effect different than the default one:

@@ -29,7 +29,7 @@
   \State $t \gets 0$
   \Statex
   \While{$t < t_{max}$}
-  \State $a_0 \gets \epsilon{\operatorname{-}}greedy(\epsilon, \underset{a}{\operatorname{argmax}}\ Q(s_0, a))$
+  \State $a_0 \gets \epsilon{\operatorname{-}}greedy(\epsilon, \underset{a}{\operatorname{argmax}}\ Q(s_0, a))$\Comment{Exploration policy}
   \State $s_1, r_1, done \gets env.step(a_0)$
   \State $sample \gets r_1 + \gamma\underset{a}{\operatorname{max}}\ Q(s_1, a)$
   \State $Q(s_0, a_0) \stackrel{+}\gets \alpha(sample - Q(s_0, a_0))$\Comment{Q-value iteration step}
@@ -42,7 +42,7 @@
   \EndIf
   \EndWhile
   \Statex
-\State \textbf{return} $\pi(s) \defeq \underset{a}{\operatorname{argmax}}\ Q_t(s, a)$
+\State \textbf{return} $\pi(s) \defeq \underset{a}{\operatorname{argmax}}\ Q(s, a)$\Comment{Learned policy}
 \EndFunction
 
 \end{algorithmic}

@@ -162,7 +162,7 @@ generated policies that solve all three problems.</p>
 
 <dl>
   <dt>Q-Learning</dt>
-  <dd>Q-Learning is a TD (temporal-difference) method which directly learns <script type="math/tex">Q^{\ast}</script> without relying on the probability distribution over states and actions or the reward function of the MDP (i.e.: without the model). The algorithm replaces the sum over weighted rewards given the true model with an exponential moving average of the difference between observations acquired by acting in the environment and its current best estimate <script type="math/tex">Q_t</script> at any given timestep <script type="math/tex">t</script>. With enough exploration, the algorithm’s estimate <script type="math/tex">Q_t</script> converges to <script type="math/tex">Q^{\ast}</script>.</dd>
+  <dd>Q-Learning is a TD (temporal-difference) method which learns <script type="math/tex">Q^{\ast}</script> without relying on knowing the true probability distribution over states and actions nor the reward function of the MDP (i.e.: without access to the true model). The algorithm replaces the sum over weighted rewards given the true model with an exponential moving average of the difference between observations acquired by acting in the environment and its current best estimate <script type="math/tex">Q_t</script> at any given timestep <script type="math/tex">t</script>. With enough exploration, the algorithm’s empirical estimate <script type="math/tex">Q_t</script> converges to <script type="math/tex">Q^{\ast}</script>.</dd>
   <dd><br /></dd>
   <dd>Because Q-Learning does not attempt to learn the underlying MDP model it falls in the category of <strong>model-free</strong> methods. The algorithm is also <strong>online</strong> because it learns at every timestep, as new observations are produced and it’s <strong>off-policy</strong>, because it learns the Q-values that derive an optimal policy even if during training it acts suboptimally (Algorithm 1).</dd>
 </dl>
@@ -181,27 +181,24 @@ generated policies that solve all three problems.</p>
           </tr>
         </table>
 
-<p>The classic formulation of Q-Learning however has two limitations, stemming from the fact that Q-values are stored in a table:</p>
+<p>The classic formulation of Q-Learning however is tabular, meaning that that Q-values are stored in a table. This has two limitations:</p>
 <ol>
   <li>Space requirements grow with the number of states and actions in a problem.</li>
   <li>There is no way to exploit similarities between Q-states; the algorithm only knows Q-values for Q-states it has experienced.</li>
 </ol>
 
-<p>The main way to overcome tabular Q-Learning limitations is by replacing the Q-table with a function of state features. This allows computing Q-values on the fly without storing them explicitly. Also, assuming the features are good enough to capture similarities between states, the function should even be able to extrapolate to Q-states never before seen. This is referred to as <strong>approximate Q-Learning</strong>.</p>
+<p>One way to overcome these limitations is by replacing the Q-table with a function that maps from state features to values. This allows computing Q-values on the fly without storing them explicitly. Also, assuming the features are good enough to capture similarities between states, the function should even be able to extrapolate to Q-states never before seen. This is referred to as <strong>approximate Q-Learning</strong> and the way to learn this Q-function is posed as an optimization problem.</p>
 
 <dl>
   <dt>Deep Q-Network</dt>
-  <dd>At its core, DQN is a form of approximate Q-learning. The more salient features of it being:</dd>
+  <dd>DQN is a form of approximate Q-learning in which the Q-function is learned thru convolutional neural networks. For a complete specification of the algorithm and its many hyperparameters refer to <a href="https://storage.googleapis.com/deepmind-media/dqn/DQNNaturePaper.pdf">the DQN paper</a>. The most prominent features of the algorithm however are:</dd>
   <dd><br />
     <ul>
-      <li><strong>A feature map <script type="math/tex">\phi</script></strong>. The paper does not describe the mapping in much detail but I think about it as a combination of feature augmentation and principal component analysis, since it the authors mention the mapping averages four frames worth of pixels and further reduces the dimensionality of sample points (frames).</li>
-      <li><strong>Two convolutional neural nets (CNNs)</strong> which perform further feature selection / composition from pixel ‘features’ and learn a Q-function which predicts all Q-values at once for a given state.</li>
+      <li><strong>A feature map <script type="math/tex">\phi</script></strong>. The paper does not describe the mapping in much detail but it seems to be a combination of kernelization followed by dimensionality reduction (PCA?).</li>
+      <li><strong>Two convolutional neural nets (CNNs)</strong> The convolutional layers in these networks learn features from raw pixels. The fully connected layers then learn a function that maps from these feature-based representation of states to all possible actions and Q-values for those state-action pairs.</li>
       <li><strong>Experience replay</strong>. A buffer that stores a fixed number of past observations used to train the nets (via mini-batch supervised learning).</li>
       <li><strong>Clipping of the training loss</strong>. The DQN paper mentions clipping the magnitude of the training loss to achieve better learning stability. OpenAI further characterizes this as the <a href="https://en.wikipedia.org/wiki/Huber_loss">Huber loss</a> in their <a href="https://blog.openai.com/openai-baselines-dqn/">Baselines DQN</a> post.</li>
     </ul>
-  </dd>
-  <dd>
-    <p>For a complete specification of the algorithm and its many hyperparameters refer to <a href="https://storage.googleapis.com/deepmind-media/dqn/DQNNaturePaper.pdf">the DQN paper</a>.</p>
   </dd>
 </dl>
 
@@ -390,7 +387,7 @@ for position, velocity, etc. This means that states have already undergone dimen
 </ol>
 
 <h4 id="testing">Testing:</h4>
-<p>OpenAI Gym defines the <em>solved</em> criteria for these environments as an average reward over 100 consecutive episodes. My tests further consisted of three separate runs of 100 consecutive episodes each. If a policy scored lower than the required average in any of the three runs, I disqualified it even if the 3-run average was within the solved criteria. An example of this occurred in LunarLander, where model 6 scored above 200 over 3 runs but scored 195.874 in the first 100-episode run.</p>
+<p>OpenAI Gym defines the <em>solved</em> criteria for these environments as an average reward over 100 consecutive episodes. My tests consisted of three separate runs of 100 consecutive episodes each. If a policy scored lower than the required average in any of the three runs, I disqualified it even if the 3-run average was within the solved criteria. An example of this occurred in LunarLander, where model 6 scored above 200 over 3 runs but scored 195.874 in the first 100-episode run.</p>
 
 <h3 id="results-cartpole-v0"><a class="toc_item" name="5"></a>Results: CartPole-v0:</h3>
 

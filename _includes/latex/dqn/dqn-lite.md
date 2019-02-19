@@ -46,20 +46,23 @@
   \State $k \gets \max(0, \min(1, \frac{t - (p_{min} - 1)}{\epsilon_{steps}}))$\Comment{$\epsilon{\operatorname{-}}$schedule}
   \State $\epsilon \gets k \epsilon_{min} + (1 - k) \epsilon_{max}$
   \Statex
-  \State $a_0 \gets \epsilon{\operatorname{-}}greedy(\epsilon, \underset{a}{\operatorname{argmax}}\ Q(s_0))$
+  \State $a_0 \gets \epsilon{\operatorname{-}}greedy(\epsilon, \underset{a}{\operatorname{argmax}}\ Q(s_0))$\Comment{Exploration policy}
   \State $s_1, r_1, done \gets env.step(a_0)$
   \State $replay \pluseq (s_0, a_0, s_1, r_1, done)$\Comment{accumulate experience}
   \State $t \pluseq 1$
   \Statex
   \If{$t \geq p_{min}$}
-  \State $\mat E \gets randomSample(replay, p_{batch})$
+  \State $\mat E \gets random(replay, p_{batch})$
   \State $\mat{\hat Y} \gets Q(\mat E_{n, 0})$
-  \State $\mat Y_{n, a} \gets \begin{cases}
-      \mat E_{n,3} + \gamma \max Q_t(\mat E_{n,2}) * \neg \mat E_{n, 4} & a = \mat E_{n, 1}\\
-      \mat{\hat Y}_{n, a} & a\neq\mat E_{n, 1}
-   \end{cases}$
   \Statex
-  \State $optimize(Q, L(\mat{\hat Y}, \mat{Y}), \alpha)$\Comment{learn Q-values}
+  \For{$n, a$}
+  \State $\mat Y_{n, a} \gets \begin{cases}
+      \mat E_{n,3} + \gamma \max Q_t(\mat E_{n,2})(\neg \mat E_{n, 4}) &:a = \mat E_{n, 1}\\
+      \mat{\hat Y}_{n, a} &:a\neq\mat E_{n, 1}
+   \end{cases}$
+   \EndFor
+  \Statex
+  \State $optimize(Q, L(\mat{\hat Y}, \mat{Y}), \alpha)$\Comment{learn a batch of Q-values}
   \Statex
   \If{$\mod((t - p_{min}) + 1, t_{update}) = 0$}\Comment{update target network}
   \State $Q_t \gets copy(Q)$
@@ -73,7 +76,7 @@
   \EndIf
   \EndWhile
   \Statex
-\State \textbf{return} $\pi(s) \defeq \underset{a}{\operatorname{argmax}}\ Q_t(s, a)$
+\State \textbf{return} $\pi(s) \defeq \underset{a}{\operatorname{argmax}}\ Q_t(s, a)$\Comment{Learned policy}
 \EndFunction
 
 \end{algorithmic}

@@ -61,20 +61,20 @@
 <section id="one">
 	<div class="inner">
 		<header class="major">
-      <h1>RED Patterns</h1>
-      <h3>A psychedelic horror room-scale VR experience for HTC Vive</h3>
+      <h1>Jumpy Cube</h1>
+      <h3>A physics-based endless scroller and RL environment</h3>
       
 		</header>
     <!--  -->
-		<p><!-- Links: -->
+		<p><!--  Links -->
 
 <h3 id="about"><a class="toc_item" name="1"></a>About:</h3>
 
-<p>RED Patterns is a psychedelic horror room-scale VR experience for HTC Vive. The project is based on an independent 360 movie called Patterns and I was approached to create a VR reinterpretation of it. I did an original proof of concept in Unity and a subsequent extended version in Unreal Engine 4.</p>
+<p>Jumpy Cube started as a quick prototype ((i.e.: developed in one day) for an endless scroller type of game, targeting mobile devices. The game consists of a (partially) physics-based cube which must keep jumping and rolling forward and onto a series of tiles which are randomly generated as the game progresses.</p>
 
-<p>The work was commissioned by <a href="http://sat.qc.ca/">SAT</a> (Societe des Arts Technologiques, Canada) and co-created with Pierre Friquet, Ando Shah, Mourad Bennacer &amp; Jean-Yves Münch. It was shown at a number of festivals in Europe and the US and won the <em>Immersion Award</em> at the <a href="http://www.nouveaucinema.ca/en">45th Festival du Nouveau Cinema</a> in Canada.</p>
+<p>The game is also suitable as a test environment for RL (reinforcement learning) agents. Particularly, the state-space for the game is virtually infinite (since new configurations of tiles are continuously generated) and involves different types of features, including some physics-based like angular velocity and momentum. This puts it roughly on par with continuous control <a href="https://gym.openai.com/">OpenAI Gym</a> environments such as <a href="https://gym.openai.com/envs/BipedalWalker-v2/">Bipedal Walker</a> and <a href="https://gym.openai.com/envs/LunarLanderContinuous-v2/">Lunar Lander</a>.</p>
 
-<p>Indoor environments were captured with Matterport depth cameras. The experience also has sequences of actors’ performances captured with additional depth cameras synched to RGB cameras, and the resulting point clouds where then used to reconstruct mesh approximations inside Unreal.</p>
+<p>The project is still a work in progress but below you can see a couple videos of the main game mechanics.</p>
 
 <!-- types:
 1:  local images.
@@ -90,11 +90,37 @@
     <figure>
         
         <div class="container">
-        <iframe src="https://www.youtube.com/embed/QoWOjMsSQIA" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen=""></iframe>
+        <iframe src="https://www.youtube.com/embed/8RMg5ClCeZ8" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen=""></iframe>
         </div>
         
         
-        <figcaption><strong>RED Patterns.</strong> HTC Vive, Unreal Engine 4.</figcaption>
+        <figcaption><strong>Jumpy Cube (prototype).</strong> Gameplay mechanics.</figcaption>
+        
+    </figure>
+    </td>
+    
+  </tr>
+</table>
+
+<!-- types:
+1:  local images.
+2: url to video.
+3: local mp4
+-->
+
+<table>
+  <tr>
+    
+    
+    <td style="border: none; width: 100%;">
+    <figure>
+        
+        <div class="container">
+        <iframe src="https://www.youtube.com/embed/ZIQWxMjokmo" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen=""></iframe>
+        </div>
+        
+        
+        <figcaption><strong>Jumpy Cube (prototype).</strong> Detail of the random tile generation mechanism.</figcaption>
         
     </figure>
     </td>

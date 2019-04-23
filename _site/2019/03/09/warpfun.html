@@ -24,7 +24,7 @@
 
 <!-- Header -->
 <header id="header"  class="post" >
-	<a href="http://localhost:4000//" class="logo"><strong>0XFEDE</strong> <span class="logo-sub">Federico Saldarini</span></a>
+	<a href="/" class="logo"><strong>0XFEDE</strong> <span class="logo-sub">Federico Saldarini</span></a>
 	<!-- <nav>
 		<a class="logo-sub" href="#menu">Menu</a>
 	</nav> -->
@@ -35,7 +35,7 @@
 	<ul class="links">
         
 		    
-		        <li><a href="http://localhost:4000//">Home</a></li>
+		        <li><a href="/">Home</a></li>
 	    	
 		
 		    
@@ -71,13 +71,14 @@
 <ul>
   <li><strong><a href="#1">About</a></strong></li>
   <li><strong><a href="#2">Finding a Homography between Corresponding Points in two Images</a></strong></li>
-  <li><strong><a href="#3">Warping one Image to Another</a></strong></li>
+  <li><strong><a href="#3">Warping Images</a></strong></li>
   <li><strong><a href="#4">Application: Fake Billboards</a></strong></li>
   <li><strong><a href="#5">Application: Panoramas</a></strong></li>
   <li><strong><a href="#6">Application: Image Recognition</a></strong></li>
 </ul>
 
 <h3 id="about"><a class="toc_item" name="1"></a>About:</h3>
+
 <p>Given a set of coplanar points in world space and their projection onto two different 2D image planes (i.e.: as seen by two different cameras or from two different points of view), a 2D planar <strong>homograhpy</strong> is a mapping between these two images of the same points. This mapping is useful in a variety of vision and computational photography tasks involving planes, such as image recognition, image stitching (i.e.: panoramas) and image rectification.</p>
 
 <p><strong>[Figure 1. The homography drawing]</strong></p>
@@ -136,7 +137,7 @@ t_y\bar{t_w} - \bar{t_y} = 0 \Rightarrow\\
 
 <p>And the solution to <script type="math/tex">\text{min}_\mathbf{h}\ \lVert\mathbf{A}\mathbf{h} - \mathbf{b}\rVert^2_2 = (\mathbf{A}^T \mathbf{A})^{-1} \mathbf{A}^T \mathbf{b}</script> will be <script type="math/tex">\mathbf{H}</script>. Also, since 2D planar homographies are invertible, we have <script type="math/tex">\mathbf{H}_{S2T}^{-1} = \mathbf{H}_{T2S}</script> which means that having computed the homography in one direction, we can invert it to reproject in the other direction.</p>
 
-<h3 id="warping-one-image-to-another"><a class="toc_item" name="3"></a>Warping one Image to Another:</h3>
+<h3 id="warping-images"><a class="toc_item" name="3"></a>Warping Images:</h3>
 
 <p>Once a homography between source and target coordinates is computed, the whole source image can be warped by reprojecting all its pixel coordinates onto the target image’s space. This is referred to as <strong>forward</strong> warping.</p>
 
@@ -151,7 +152,7 @@ t_y\bar{t_w} - \bar{t_y} = 0 \Rightarrow\\
 &\mathbf{T}[\mathbf{t}^{(i)}] = \text{interpolate}(\mathbf{S}, \mathbf{s}^{(i)})
 \end{align} %]]></script>
 
-<p>Which is easier to approach, since it means computing a single interpolated value given a subpixel lookup in the source. The applications in this project use inverse warping with bilinear interpolation other than to figure out the sizes of final images.</p>
+<p>Which is easier to approach since it requires computing a single interpolated value given a subpixel lookup in the source. The applications in this project use inverse warping with bilinear interpolation other than to figure out the sizes of final images.</p>
 
 <h3 id="application-fake-billboards"><a class="toc_item" name="4"></a>Application: Fake Billboards:</h3>
 
@@ -196,14 +197,15 @@ t_y\bar{t_w} - \bar{t_y} = 0 \Rightarrow\\
 </div>
 
 <!-- Scripts -->
-	<script src="http://localhost:4000/assets/js/jquery.min.js"></script>
-	<script src="http://localhost:4000/assets/js/jquery.scrolly.min.js"></script>
-	<script src="http://localhost:4000/assets/js/jquery.scrollex.min.js"></script>
-	<script src="http://localhost:4000/assets/js/skel.min.js"></script>
-	<script src="http://localhost:4000/assets/js/util.js"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
-	<!--[if lte IE 8]><script src="http://localhost:4000/assets/js/ie/respond.min.js"></script><![endif]-->
-	<script src="http://localhost:4000/assets/js/main.js"></script>
+	<script src="/assets/js/jquery.min.js"></script>
+	<script src="/assets/js/jquery.scrolly.min.js"></script>
+	<script src="/assets/js/jquery.scrollex.min.js"></script>
+	<script src="/assets/js/skel.min.js"></script>
+	<script src="/assets/js/util.js"></script>
+	<script type="text/javascript" async src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+	<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script> -->
+	<!--[if lte IE 8]><script src="/assets/js/ie/respond.min.js"></script><![endif]-->
+	<script src="/assets/js/main.js"></script>
 
 
 </body>

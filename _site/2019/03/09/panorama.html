@@ -177,11 +177,9 @@
 
 <h3 id="corner-detection--non-maximal-suppression"><a class="toc_item" name="2"></a>Corner Detection + Non-Maximal Suppression</h3>
 
-<p>This step as well as feature descriptors generation are carried out in parallel (on thread per image) in order to reduce computation time.</p>
+<p>The first step in the pipeline is detecting several <a href="https://en.wikipedia.org/wiki/Harris_Corner_Detector">Harris corners</a> in both (grayscale) images and, in order to keep the computational cost of the subsequent matching stage low <a href="https://inst.eecs.berkeley.edu/~cs194-26/fa18/Papers/MOPS.pdf">[1]</a>, the number of corners is further decreased by a suppression scheme. Additionally, in this project the corner detection and generation of feature descriptors are carried out in parallel (one thread per image) in order to further reduce computation time.</p>
 
-<p>The first step in the pipeline is detecting several <a href="https://en.wikipedia.org/wiki/Harris_Corner_Detector">Harris corners</a> in both (grayscale) images and, in order to keep the computational cost of the subsequent matching stage low <a href="https://inst.eecs.berkeley.edu/~cs194-26/fa18/Papers/MOPS.pdf">[1]</a>, the number of corners is further decreased by a suppression scheme.</p>
-
-<p>The scheme presented in <a href="https://inst.eecs.berkeley.edu/~cs194-26/fa18/Papers/MOPS.pdf">[1]</a> is Adaptive Non-Maximal Suppression (ANMS). This scheme preserves a good spatial distribution for the remaining corners, which is desirable. In practice however, I found that just keeping the N strongest corners a pixel apart, over 3x3 pixel regions sometimes produced better corners, even if it resulted in a biased distribution.</p>
+<p>The suppression scheme presented in <a href="https://inst.eecs.berkeley.edu/~cs194-26/fa18/Papers/MOPS.pdf">[1]</a> is Adaptive Non-Maximal Suppression (ANMS). This scheme preserves a good spatial distribution for the remaining corners, which is desirable. In practice however, I found that just keeping the N strongest corners a pixel apart, over 3x3 pixel regions sometimes produced better corners, even if it resulted in a biased distribution.</p>
 
 <!-- types:
 1:  local images.

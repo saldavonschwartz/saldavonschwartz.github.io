@@ -9,6 +9,9 @@
 {% assign descriptions = include.descriptions | split: '; '%}
 {% assign types = include.types | split: '; '%}
 {% assign sizes = include.sizes | split: '; '%}
+{% assign gtitle = include.gtitle %}
+{% assign gdescription = include.gdescription %}
+
 <table>
   <tr>
     {% for source in sources %}
@@ -34,3 +37,6 @@
     {% endfor %}
   </tr>
 </table>
+{% if gtitle %}
+<figcaption style="margin-top: -2.5em; margin-bottom: 2.5em;"><strong>{{gtitle}}</strong> {{ gdescription }}</figcaption>
+{% endif %}

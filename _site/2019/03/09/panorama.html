@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<!--
+	Forty by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+
+<head>
+	<title>0XFEDE</title>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+	<!--[if lte IE 8]><script src="/assets/js/ie/html5shiv.js"></script><![endif]-->
+	<link rel="stylesheet" href="/assets/css/main.css" />
+	<!--[if lte IE 9]><link rel="stylesheet" href="/assets/css/ie9.css" /><![endif]-->
+	<!--[if lte IE 8]><link rel="stylesheet" href="/assets/css/ie8.css" /><![endif]-->
+</head>
+
+
+<body>
+
+    <!-- Wrapper -->
+<div id="wrapper">
+
+<!-- Header -->
+<header id="header"  class="post" >
+	<a href="/" class="logo"><strong>0XFEDE</strong> <span class="logo-sub">Federico Saldarini</span></a>
+	<!-- <nav>
+		<a class="logo-sub" href="#menu">Menu</a>
+	</nav> -->
+</header>
+
+<!-- Menu -->
+<!-- <nav id="menu">
+	<ul class="links">
+        
+		    
+		        <li><a href="/">Home</a></li>
+	    	
+		
+		    
+		
+		
+		    
+		
+		    
+		
+	</ul>
+	<ul class="actions vertical">
+		<li><a href="#" class="button special fit">Get Started</a></li>
+		<li><a href="#" class="button fit">Log In</a></li>
+	</ul>
+</nav> -->
+
+
+
+<!-- Main -->
+<div id="main" class="alt">
+
+<!-- One -->
+<section id="one">
+	<div class="inner">
+		<header class="major">
+      <h1>Automatic Panoramas</h1>
+      <h3>Planar reprojection based on feature matching</h3>
+      
+		</header>
+    <!--  -->
+		<p><!-- Links: -->
+
+<ul>
+  <li><strong><a href="#1">About</a></strong></li>
+  <li><strong><a href="#2">Corner Detection + Non-Maximal Suppression</a></strong></li>
+  <li><strong><a href="#3">Feature Descriptors</a></strong></li>
+  <li><strong><a href="#4">Feature Matching and Homography Computation</a></strong></li>
+  <li><strong><a href="#5">Image Warping</a></strong></li>
+  <li><strong><a href="#6">Compositing</a></strong></li>
+</ul>
+
+<h3 id="about"><a class="toc_item" name="1"></a>About</h3>
+
+<p>This project implements a pipeline for the automatic warping of images into panoramic compositions via planar reprojection based on feature matching. The project is based on the work by <a href="https://inst.eecs.berkeley.edu/~cs194-26/fa18/Papers/MOPS.pdf">Brown, Szeliski and Winder [1]</a>, as well as lectures from UC Berkeley’s <a href="https://inst.eecs.berkeley.edu/~cs194-26/fa18/">CS194-26: Image Manipulation and Computational Photography</a>.</p>
+
+<p><strong>Note:</strong> the repo for this project is private but available upon request. I keep it private since it is a regular assignment in CS194.</p>
+
+<!-- types:
+1:  local images.
+2: url to video.
+3: local mp4
+-->
+
+<table>
+  <tr>
+    
+    
+    <td style="border: none; width: 33%;">
+    <figure>
+        
+        <img style="width: 100%; height: auto;" src="/assets/images/panorama/lr-l.JPG" alt="" />
+        
+        
+    </figure>
+    </td>
+    
+    
+    <td style="border: none; width: 33%;">
+    <figure>
+        
+        <img style="width: 100%; height: auto;" src="/assets/images/panorama/lr-c.JPG" alt="" />
+        
+        
+    </figure>
+    </td>
+    
+    
+    <td style="border: none; width: 33%;">
+    <figure>
+        
+        <img style="width: 100%; height: auto;" src="/assets/images/panorama/lr-r.JPG" alt="" />
+        
+        
+    </figure>
+    </td>
+    
+  </tr>
+</table>
+
+<figcaption style="margin-top: -2.5em; margin-bottom: 2.5em;"><strong>Figure 1.</strong> Living Room dataset (3 images: left, center, right) spanning approximately a 120° FOV.</figcaption>
+
+<!-- types:
+1:  local images.
+2: url to video.
+3: local mp4
+-->
+
+<table>
+  <tr>
+    
+    
+    <td style="border: none; width: 100%;">
+    <figure>
+        
+        <img style="width: 100%; height: auto;" src="/assets/images/panorama/livingroom-anms-final.jpg" alt="" />
+        
+        
+        <figcaption><strong>Figure 2.</strong> Computed panorama from the Living Room dataset (ANMS).</figcaption>
+        
+    </figure>
+    </td>
+    
+  </tr>
+</table>
+
+<!-- types:
+1:  local images.
+2: url to video.
+3: local mp4
+-->
+
+<table>
+  <tr>
+    
+    
+    <td style="border: none; width: 100%;">
+    <figure>
+        
+        <img style="width: 100%; height: auto;" src="/assets/images/panorama/PanoPipeline2.svg" alt="" />
+        
+        
+        <figcaption><strong>Figure 3.</strong> Diagram of the pipeline.</figcaption>
+        
+    </figure>
+    </td>
+    
+  </tr>
+</table>
+
+<h3 id="corner-detection--non-maximal-suppression"><a class="toc_item" name="2"></a>Corner Detection + Non-Maximal Suppression</h3>
+
+<p>This step as well as feature descriptors generation are carried out in parallel (on thread per image) in order to reduce computation time.</p>
+
+<p>The first step in the pipeline is detecting several <a href="https://en.wikipedia.org/wiki/Harris_Corner_Detector">Harris corners</a> in both (grayscale) images and, in order to keep the computational cost of the subsequent matching stage low <a href="https://inst.eecs.berkeley.edu/~cs194-26/fa18/Papers/MOPS.pdf">[1]</a>, the number of corners is further decreased by a suppression scheme.</p>
+
+<p>The scheme presented in <a href="https://inst.eecs.berkeley.edu/~cs194-26/fa18/Papers/MOPS.pdf">[1]</a> is Adaptive Non-Maximal Suppression (ANMS). This scheme preserves a good spatial distribution for the remaining corners, which is desirable. In practice however, I found that just keeping the N strongest corners a pixel apart, over 3x3 pixel regions sometimes produced better corners, even if it resulted in a biased distribution.</p>
+
+<!-- types:
+1:  local images.
+2: url to video.
+3: local mp4
+-->
+
+<table>
+  <tr>
+    
+    
+    <td style="border: none; width: 100%;">
+    <figure>
+        
+        <img style="width: 50%; height: auto;" src="/assets/images/panorama/livingroom-anms-0.jpg" alt="" />
+        
+        
+        <figcaption><strong>Figure 4.</strong> 666 corners initially detected</figcaption>
+        
+    </figure>
+    </td>
+    
+  </tr>
+</table>
+
+<!-- types:
+1:  local images.
+2: url to video.
+3: local mp4
+-->
+
+<table>
+  <tr>
+    
+    
+    <td style="border: none; width: 50%;">
+    <figure>
+        
+        <img style="width: 100%; height: auto;" src="/assets/images/panorama/livingroom-anms-2.jpg" alt="" />
+        
+        
+    </figure>
+    </td>
+    
+    
+    <td style="border: none; width: 50%;">
+    <figure>
+        
+        <img style="width: 100%; height: auto;" src="/assets/images/panorama/livingroom-2.jpg" alt="" />
+        
+        
+    </figure>
+    </td>
+    
+  </tr>
+</table>
+
+<figcaption style="margin-top: -2.5em; margin-bottom: 2.5em;"><strong>Figure 5.</strong> 300 corners remaining after ANMS (left) vs 244 with scikit <code>peak_local_max</code> (right).</figcaption>
+
+<!-- types:
+1:  local images.
+2: url to video.
+3: local mp4
+-->
+
+<table>
+  <tr>
+    
+    
+    <td style="border: none; width: 100%;">
+    <figure>
+        
+        <img style="width: 100%; height: auto;" src="/assets/images/panorama/balcony/balcony-anms-0.jpg" alt="" />
+        
+        
+    </figure>
+    </td>
+    
+  </tr>
+</table>
+
+<figcaption style="margin-top: -2.5em; margin-bottom: 2.5em;"><strong>Figure 6.</strong> Computed panorama from the Balcony dataset (11 images) using ANMS.</figcaption>
+
+<!-- types:
+1:  local images.
+2: url to video.
+3: local mp4
+-->
+
+<table>
+  <tr>
+    
+    
+    <td style="border: none; width: 100%;">
+    <figure>
+        
+        <img style="width: 100%; height: auto;" src="/assets/images/panorama/balcony/balcony-0.jpg" alt="" />
+        
+        
+    </figure>
+    </td>
+    
+  </tr>
+</table>
+
+<figcaption style="margin-top: -2.5em; margin-bottom: 2.5em;"><strong>Figure 7.</strong> Computed panorama from the Balcony dataset (11 images) using <code>peak_local_max</code>. Notice the better convergence on the top-right.</figcaption>
+
+<!-- types:
+1:  local images.
+2: url to video.
+3: local mp4
+-->
+
+<table>
+  <tr>
+    
+    
+    <td style="border: none; width: 100%;">
+    <figure>
+        
+        <img style="width: 100%; height: auto;" src="/assets/images/panorama/livingroom-final.jpg" alt="" />
+        
+        
+        <figcaption><strong>Figure 8.</strong> Computed panorama from the Living Room dataset using <code>peak_local_max</code>. Notice the worse convergence around the sofa and coffee table compared to Figure 2.</figcaption>
+        
+    </figure>
+    </td>
+    
+  </tr>
+</table>
+
+<h3 id="feature-descriptors"><a class="toc_item" name="3"></a>Feature Descriptors</h3>
+
+<p>From the remaining corners, 9x9 feature descriptors centered at each corner are extracted. Instead of following the exact approach in <a href="https://inst.eecs.berkeley.edu/~cs194-26/fa18/Papers/MOPS.pdf">[1]</a>, I subsampled 45x45 patches with stride 5, resulting in 9x9 patches centered at each corner, which are then normalized.</p>
+
+<!-- types:
+1:  local images.
+2: url to video.
+3: local mp4
+-->
+
+<table>
+  <tr>
+    
+    
+    <td style="border: none; width: 33%;">
+    <figure>
+        
+        <img style="width: 100%; height: auto;" src="/assets/images/panorama/livingroom-anms-descriptor-crop.jpg" alt="" />
+        
+        
+    </figure>
+    </td>
+    
+    
+    <td style="border: none; width: 33%;">
+    <figure>
+        
+        <img style="width: 67%; height: auto;" src="/assets/images/panorama/livingroom-anms-descriptor-45.jpg" alt="" />
+        
+        
+    </figure>
+    </td>
+    
+    
+    <td style="border: none; width: 33%;">
+    <figure>
+        
+        <img style="width: 67%; height: auto;" src="/assets/images/panorama/livingroom-anms-descriptor-9.jpg" alt="" />
+        
+        
+    </figure>
+    </td>
+    
+  </tr>
+</table>
+
+<figcaption style="margin-top: -2.5em; margin-bottom: 2.5em;"><strong>Figure 9.</strong> Patch around a corner (left), 45x45 descriptor (center) and normalized 9x9 descriptor (right).</figcaption>
+
+<h3 id="feature-matching-and-homography-computation"><a class="toc_item" name="4"></a>Feature Matching and Homography Computation</h3>
+
+<p>Descriptors between both images are matched in a two-step process. First, features are matched based on the ratio of their two nearest neighbors (as determined by the <script type="math/tex">\mathbf{L}^{2}_{2}</script> metric). Then the resulting candidate features are evaluated with 4-point <a href="https://en.wikipedia.org/wiki/Random_sample_consensus">Random Sample Consensus</a> (RANSAC) in order to further filter out outliers.</p>
+
+<p>The RANSAC algorithm computes successive homographies in order to evaluate how good random 4-point (4 feature centers) sets are in mapping from source to target image. Once a suitable 4-point set is found, another homography is computed from those 4 points plus all points which mapped correctly (according to a pixel threshold) under that homography, in order to create a larger set of correspondences which translates to a more robust homography. This process is repeated
+for a number of times and the homography for the best candidate set is used to finally warp the images.</p>
+
+<!-- types:
+1:  local images.
+2: url to video.
+3: local mp4
+-->
+
+<table>
+  <tr>
+    
+    
+    <td style="border: none; width: 50%;">
+    <figure>
+        
+        <img style="width: 100%; height: auto;" src="/assets/images/panorama/livingroom-anms-4.jpg" alt="" />
+        
+        
+    </figure>
+    </td>
+    
+    
+    <td style="border: none; width: 50%;">
+    <figure>
+        
+        <img style="width: 100%; height: auto;" src="/assets/images/panorama/livingroom-anms-5.jpg" alt="" />
+        
+        
+    </figure>
+    </td>
+    
+  </tr>
+</table>
+
+<figcaption style="margin-top: -2.5em; margin-bottom: 2.5em;"><strong>Figure 10.</strong> A first matching step returns 24 candidates for the Living Room dataset. Some are outliers however.</figcaption>
+
+<!-- types:
+1:  local images.
+2: url to video.
+3: local mp4
+-->
+
+<table>
+  <tr>
+    
+    
+    <td style="border: none; width: 100%;">
+    <figure>
+        
+        <img style="width: 100%; height: auto;" src="/assets/images/panorama/livingroom-anms-6.svg" alt="" />
+        
+        
+    </figure>
+    </td>
+    
+  </tr>
+</table>
+
+<figcaption style="margin-top: -2.5em; margin-bottom: 2.5em;"><strong>Figure 11.</strong> After further outlier rejection with RANSAC, 9 consistent candidates remain. These are used to compute the final homography.</figcaption>
+
+<p>The homography <script type="math/tex">\mathbf{H}_{\scriptsize S2T}</script> maps source pixel locations <script type="math/tex">\mathbf{s}^{(i)}</script> to target pixel locations <script type="math/tex">\mathbf{t}^{(i)}</script>. That is, if <script type="math/tex">% <![CDATA[
+\hat{\mathbf{s}}^{(i)} = \begin{bmatrix}s_x&s_y&1\end{bmatrix} %]]></script> is a source pixel in homogeneous coordinates, the homography is such that <script type="math/tex">\bar{\mathbf{t}}^{(i)} = \mathbf{H} \hat{\mathbf{s}}^{(i)}</script>, where <script type="math/tex">% <![CDATA[
+\bar{\mathbf{t}}^{(i)} = \begin{bmatrix}\bar{t_x}&\bar{t_y}&\bar{t_w}\end{bmatrix} %]]></script> and <script type="math/tex">% <![CDATA[
+\mathbf{t}^{(i)} = \begin{bmatrix}\frac{\bar{t_x}}{\bar{t_w}}&\frac{\bar{t_y}}{\bar{t_w}}\end{bmatrix} %]]></script> is the source pixel back in cartesian coordinates.</p>
+
+<p>A homography satisfying the above mapping (there’s many) can be recovered by formulating the search as a minimization problem <script type="math/tex">\text{argmin}_\mathbf{h}\ \lVert\mathbf{A}\mathbf{h} - \mathbf{b}\rVert^2_2</script> where <script type="math/tex">\mathbf{h}</script> represents the unknown parameters in <script type="math/tex">\mathbf{H}</script>.</p>
+
+<p>The constraints to this system of equations are essentially derived from wanting each component in a target point to match that of a source point transformed by the homography. At least 4 matching feature pairs are needed (8 constraints between x,y pairs) but the more the better:</p>
+
+<ul>
+  <li>
+    <p><strong>x:</strong> <script type="math/tex">% <![CDATA[
+t_x\bar{t_w} - \bar{t_x} = 0 \Rightarrow\\
+\begin{align}&t_x(h_{31}s_x + h_{32}s_y + h_{33}) - h_{11}s_x - h_{12}s_y - h_{13} = 0\\
+&\begin{bmatrix}-s_x&-s_y&-1&0&0&0&t_x s_x&t_x s_y&t_x\end{bmatrix}^T\\
+&{\mathbf{a}_x^{(i)}}^T \mathbf{h} = 0
+\end{align} %]]></script></p>
+  </li>
+  <li>
+    <p><strong>y:</strong> <script type="math/tex">% <![CDATA[
+t_y\bar{t_w} - \bar{t_y} = 0 \Rightarrow\\
+\begin{align}&t_y(h_{31}s_x + h_{32}s_y + h_{33}) - h_{21}s_x - h_{22}s_y - h_{23} = 0\\
+&\begin{bmatrix}0&0&0&-s_x&-s_y&-1&t_y s_x&t_y s_y&t_y\end{bmatrix}^T\\
+&{\mathbf{a}_y^{(i)}}^T \mathbf{h} = 0
+\end{align} %]]></script></p>
+  </li>
+  <li>
+    <p><strong>scale:</strong> <script type="math/tex">% <![CDATA[
+\lVert\mathbf{H}\rVert_F = 1 \Rightarrow\\
+\begin{align}
+&\begin{bmatrix}0&0&0&0&0&0&0&0&1\end{bmatrix}^T\\
+&\mathbf{a}_k^T \mathbf{h} = 1
+\end{align} %]]></script></p>
+  </li>
+</ul>
+
+<h3 id="image-warping"><a class="toc_item" name="5"></a>Image Warping</h3>
+
+<p>Once a good homography has been found, the source image’s 4 corners (the edges) are <em>forward warped</em> onto the target space in order to compute the extent of the final composite image and two empty images of this new size are created.</p>
+
+<p>The target image is copied to one of these images without warping (though accounting for its offset in the new image size). The source image is instead <em>inverse warped</em> in order to interpolate pixel values. First, all coordinates from target space are warped onto source space (via the inverse of <script type="math/tex">\mathbf{H}_{\scriptsize S2T} = \mathbf{H}_{\scriptsize T2S}</script>). Then, for all target coordinates which mapped to within the range of the original source image (i.e.: between (0,0) and (w, h) of the unmodified source), pixels in the other empty image are assigned values bilinearly interpolated from the source space values.</p>
+
+<!-- types:
+1:  local images.
+2: url to video.
+3: local mp4
+-->
+
+<table>
+  <tr>
+    
+    
+    <td style="border: none; width: 50%;">
+    <figure>
+        
+        <img style="width: 100%; height: auto;" src="/assets/images/panorama/livingroom-anms-7.jpg" alt="" />
+        
+        
+    </figure>
+    </td>
+    
+    
+    <td style="border: none; width: 50%;">
+    <figure>
+        
+        <img style="width: 100%; height: auto;" src="/assets/images/panorama/livingroom-anms-8.jpg" alt="" />
+        
+        
+    </figure>
+    </td>
+    
+  </tr>
+</table>
+
+<figcaption style="margin-top: -2.5em; margin-bottom: 2.5em;"><strong>Figure 12.</strong> The left image from the Living Room dataset is warped onto the space of the center image in the dataset.</figcaption>
+
+<h3 id="compositing"><a class="toc_item" name="6"></a>Compositing</h3>
+
+<p>Compositing is done by adding both final images, each multiplied by an alpha mask. The process is similar to linear interpolation of two images but instead each image has its own alpha mask with a nonlinear gradient applied only to the area where both images intersect.</p>
+
+<!-- types:
+1:  local images.
+2: url to video.
+3: local mp4
+-->
+
+<table>
+  <tr>
+    
+    
+    <td style="border: none; width: 50%;">
+    <figure>
+        
+        <img style="width: 100%; height: auto;" src="/assets/images/panorama/livingroom-anms-9.jpg" alt="" />
+        
+        
+    </figure>
+    </td>
+    
+    
+    <td style="border: none; width: 50%;">
+    <figure>
+        
+        <img style="width: 100%; height: auto;" src="/assets/images/panorama/livingroom-anms-10.jpg" alt="" />
+        
+        
+    </figure>
+    </td>
+    
+  </tr>
+</table>
+
+<figcaption style="margin-top: -2.5em; margin-bottom: 2.5em;"><strong>Figure 13.</strong> Left and center images from the Living Room dataset after applying alpha masks.</figcaption>
+
+<!-- types:
+1:  local images.
+2: url to video.
+3: local mp4
+-->
+
+<table>
+  <tr>
+    
+    
+    <td style="border: none; width: 100%;">
+    <figure>
+        
+        <img style="width: 100%; height: auto;" src="/assets/images/panorama/livingroom-anms-11.jpg" alt="" />
+        
+        
+        <figcaption><strong>Figure 14.</strong> Final composition for left and center images in the Living Room dataset.</figcaption>
+        
+    </figure>
+    </td>
+    
+  </tr>
+</table>
+
+</p>
+	</div>
+</section>
+
+</div>
+
+    <!-- Footer -->
+	<footer id="footer">
+		<div class="inner">
+			<ul class="icons">
+				
+				
+				
+				
+				
+				
+				
+				
+				<li><a href="https://github.com/saldavonschwartz" class="icon alt fa-github" target="_blank"><span class="label">GitHub</span></a></li>
+				
+				
+				
+				<li><a href="https://www.linkedin.com/in/federicosaldarini" class="icon alt fa-linkedin" target="_blank"><span class="label">LinkedIn</span></a></li>
+				
+			</ul>
+			<ul class="copyright">
+				<li>&copy; 2018 Federico Saldarini. All rights reserved.</li>
+				<li>Based on Forty theme by <a href="https://html5up.net" target="_blank">HTML5 UP</a></li>
+			</ul>
+		</div>
+	</footer>
+
+</div>
+
+<!-- Scripts -->
+	<script src="/assets/js/jquery.min.js"></script>
+	<script src="/assets/js/jquery.scrolly.min.js"></script>
+	<script src="/assets/js/jquery.scrollex.min.js"></script>
+	<script src="/assets/js/skel.min.js"></script>
+	<script src="/assets/js/util.js"></script>
+	<script type="text/x-mathjax-config">
+		MathJax.Hub.Config({
+		  CommonHTML: {
+		    scale: 90
+		  }
+		});
+	</script>
+	<script type="text/javascript" async src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+	<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script> -->
+	<!--[if lte IE 8]><script src="/assets/js/ie/respond.min.js"></script><![endif]-->
+	<script src="/assets/js/main.js"></script>
+
+
+</body>
+
+</html>

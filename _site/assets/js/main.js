@@ -359,3 +359,114 @@
 	});
 
 })(jQuery);
+
+(function($) {
+	var canvas = document.getElementById('glview');
+	const gl = canvas.getContext('webgl');
+	gl.clearColor(0, 0, 0, 1);
+
+	quad = new Float32Array([
+		-1.0, -1.0,
+     1.0, -1.0,
+    -1.0,  1.0,
+    -1.0,  1.0,
+     1.0, -1.0,
+     1.0,  1.0
+	 ]);
+
+	vtxbuff = gl.createBuffer();
+	gl.bindBuffer(gl.ARRAY_BUFFER, vtxbuff);
+	gl.bufferData(gl.ARRAY_BUFFER, quad, gl.STATIC_DRAW);
+
+	vshader = gl.createShader(gl.VERTEX_SHADER);
+	gl.shaderSource(vshader,`
+	precision mediump float;
+	attribute vec2 pos;
+
+	void main() {
+	    gl_Position = vec4(pos, 0., 1.);
+	}
+	`
+	);
+
+	gl.compileShader(vshader);
+
+	fshader = gl.createShader(gl.FRAGMENT_SHADER);
+	gl.shaderSource(fshader,`
+		precision mediump float;
+		uniform vec2 resolution;
+		uniform float u_time;
+
+		vec2 random2(vec2 p) {
+			return fract(sin(vec2(dot(p,vec2(127.1,311.7)),dot(p,vec2(269.5,183.3))))*43758.5453);
+		}
+
+		void main() {
+			float time = u_time / 1000.;
+	    vec2 st = gl_FragCoord.xy/resolution.xy;
+	    st.x *= resolution.x/resolution.y;
+	    vec3 color = vec3(.0);
+
+			st -= 0.5;
+			st *= 5.;
+	    float a = mod(time/4., 2.*3.14);
+	    mat2 R = mat2(cos(a), sin(a), -sin(a), cos(a));
+	    st *= R;
+
+	    vec2 i_st = floor(st);
+	    vec2 f_st = fract(st);
+
+	    float m_dist = 1.;
+
+	    for (int y= -1; y <= 1; y++) {
+        for (int x= -1; x <= 1; x++) {
+          vec2 neighbor = vec2(float(x),float(y));
+          vec2 point = random2(i_st + neighbor);
+          point = 0.5 + 0.5*sin(time + 6.2831*point);
+
+          vec2 diff = neighbor + point - f_st;
+          float dist = length(diff);
+          m_dist = min(m_dist, dist);
+	      }
+	    }
+
+	    // Draw the min distance (distance field)
+	    color += m_dist;
+
+	    // Draw cell center
+	    color.r += 0.4*(.5-step(.02, m_dist));
+
+	    // color.b += 0.2 * abs(sin(time*0.5));
+			color = mix(color, vec3(.5, .5, .5), .7);
+	    gl_FragColor = vec4(color, 1.);
+	}
+	`
+	);
+
+	gl.compileShader(fshader);
+
+	program = gl.createProgram();
+	gl.attachShader(program, vshader);
+	gl.attachShader(program, fshader);
+	gl.linkProgram(program);
+
+	i = gl.getAttribLocation(program, 'pos');
+	gl.enableVertexAttribArray(i);
+	gl.vertexAttribPointer(i, 2, gl.FLOAT, false, 0, 0);
+
+	utime = gl.getUniformLocation(program, 'u_time');
+	uresolution = gl.getUniformLocation(program, 'resolution');
+
+	gl.useProgram(program);
+	gl.uniform2f(uresolution, canvas.width, canvas.height);
+
+	function tick(ms) {
+		gl.clear(gl.COLOR_BUFFER_BIT);
+		gl.uniform1f(utime, ms);
+		gl.drawArrays(gl.TRIANGLES, 0, 6);
+		requestAnimationFrame(tick);
+	}
+
+	// requestAnimationFrame(tick);
+
+})(jQuery);

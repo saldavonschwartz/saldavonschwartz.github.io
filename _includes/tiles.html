@@ -1,5 +1,6 @@
 <section id="one" class="tiles">
-	{% for post in site.posts limit:site.tiles-count %}
+	{% assign sorted = site.posts | sort:"idx" %}
+	{% for post in sorted limit:site.tiles-count %}
 	{% if site.tiles-source == 'posts' %}
         <article>
                 <span class="image">

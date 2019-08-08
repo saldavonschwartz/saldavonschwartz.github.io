@@ -63,7 +63,7 @@
 		<header class="major">
       <h1>Automatic Panoramas</h1>
       <h3>Planar reprojection based on feature matching</h3>
-      
+      <h5><a href=https://github.com/saldavonschwartz/Panorama class="button">github project</a></h5>
 		</header>
     <!--  -->
 		<p><!-- Links: -->
@@ -422,10 +422,10 @@ for a number of times and the homography for the best candidate set is used to f
 
 <figcaption style="margin-top: -2.5em; margin-bottom: 2.5em;"><strong>Figure 11.</strong> After further outlier rejection with RANSAC, 9 consistent candidates remain. These are used to compute the final homography.</figcaption>
 
-<p>The homography <script type="math/tex">\mathbf{H}_{\scriptsize S2T}</script> maps source pixel locations <script type="math/tex">\mathbf{s}^{(i)}</script> to target pixel locations <script type="math/tex">\mathbf{t}^{(i)}</script>. That is, if <script type="math/tex">% <![CDATA[
-\hat{\mathbf{s}}^{(i)} = \begin{bmatrix}s_x&s_y&1\end{bmatrix} %]]></script> is a source pixel in homogeneous coordinates, the homography is such that <script type="math/tex">\bar{\mathbf{t}}^{(i)} = \mathbf{H} \hat{\mathbf{s}}^{(i)}</script>, where <script type="math/tex">% <![CDATA[
+<p>The homography <script type="math/tex">\mathbf{H}_{\scriptsize S2T}</script> maps source pixel locations <script type="math/tex">\mathbf{s}^{(i)}</script> to their corresponding target locations <script type="math/tex">\mathbf{t}^{(i)}</script>. That is, if <script type="math/tex">% <![CDATA[
+\hat{\mathbf{s}}^{(i)} = \begin{bmatrix}s_x&s_y&1\end{bmatrix} %]]></script> is a source pixel location in homogeneous coordinates, the homography is such that <script type="math/tex">\bar{\mathbf{t}}^{(i)} = \mathbf{H} \hat{\mathbf{s}}^{(i)}</script>, where <script type="math/tex">% <![CDATA[
 \bar{\mathbf{t}}^{(i)} = \begin{bmatrix}\bar{t_x}&\bar{t_y}&\bar{t_w}\end{bmatrix} %]]></script> and <script type="math/tex">% <![CDATA[
-\mathbf{t}^{(i)} = \begin{bmatrix}\frac{\bar{t_x}}{\bar{t_w}}&\frac{\bar{t_y}}{\bar{t_w}}\end{bmatrix} %]]></script> is the source pixel back in cartesian coordinates.</p>
+\mathbf{t}^{(i)} = \begin{bmatrix}\frac{\bar{t_x}}{\bar{t_w}}&\frac{\bar{t_y}}{\bar{t_w}}\end{bmatrix} %]]></script> is the target in cartesian coordinates.</p>
 
 <p>A homography satisfying the above mapping (there’s many) can be recovered by formulating the search as a minimization problem <script type="math/tex">\text{argmin}_\mathbf{h}\ \lVert\mathbf{A}\mathbf{h} - \mathbf{b}\rVert^2_2</script> where <script type="math/tex">\mathbf{h}</script> represents the unknown parameters in <script type="math/tex">\mathbf{H}</script>.</p>
 

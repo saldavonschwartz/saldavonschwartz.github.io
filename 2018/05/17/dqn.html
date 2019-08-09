@@ -78,7 +78,7 @@
   <li><strong><a href="#7">Results: MountainCar-v0</a></strong></li>
 </ul>
 
-<h3 id="about"><a class="toc_item" name="1"></a>About:</h3>
+<h3 id="about"><a class="toc_item" name="1"></a>About</h3>
 
 <p>In this project I implemented a slight variation of <a href="https://deepmind.com/research/dqn/">Deep Q-Network</a> (DQN), which I informally call <strong>DQN-Lite</strong>,  and used it to learn several policies that solve three of the environments in <a href="https://gym.openai.com/">OpenAI Gym</a>: CartPole-v0, LunarLander-v2 and MountainCar-v0.</p>
 
@@ -139,7 +139,7 @@ generated policies that solve all three problems.</p>
   </tr>
 </table>
 
-<h3 id="from-q-learning-to-dqn"><a class="toc_item" name="2"></a>From Q-Learning to DQN:</h3>
+<h3 id="from-q-learning-to-dqn"><a class="toc_item" name="2"></a>From Q-Learning to DQN</h3>
 
 <dl>
   <dt>Solving a Markov Decision Process from Q-values</dt>
@@ -202,7 +202,7 @@ generated policies that solve all three problems.</p>
   </dd>
 </dl>
 
-<h3 id="dqn-lite"><a class="toc_item" name="3"></a>DQN-Lite:</h3>
+<h3 id="dqn-lite"><a class="toc_item" name="3"></a>DQN-Lite</h3>
 
 <p>My implementation (Algorithm 2) follows the general DQN algorithm but makes some simplifications. The key differences are:</p>
 
@@ -247,7 +247,7 @@ for position, velocity, etc. This means that states have already undergone dimen
           </tr>
         </table>
 
-<h3 id="training-and-testing"><a class="toc_item" name="4"></a>Training and Testing:</h3>
+<h3 id="training-and-testing"><a class="toc_item" name="4"></a>Training and Testing</h3>
 
 <h4 id="training">Training:</h4>
 <p>Two recurring themes in reinforcement learning are <strong>exploration vs exploitation</strong> and <strong>credit assignment</strong>. Since the Gym environments I solved in this project have well-defined rewards, I focused instead on balancing exploration vs exploitation.</p>
@@ -389,7 +389,7 @@ for position, velocity, etc. This means that states have already undergone dimen
 <h4 id="testing">Testing:</h4>
 <p>OpenAI Gym defines the <em>solved</em> criteria for these environments as an average reward over 100 consecutive episodes. My tests consisted of three separate runs of 100 consecutive episodes each. If a policy scored lower than the required average in any of the three runs, I disqualified it even if the 3-run average was within the solved criteria. An example of this occurred in LunarLander, where model 6 scored above 200 over 3 runs but scored 195.874 in the first 100-episode run.</p>
 
-<h3 id="results-cartpole-v0"><a class="toc_item" name="5"></a>Results: CartPole-v0:</h3>
+<h3 id="results-cartpole-v0"><a class="toc_item" name="5"></a>Results: CartPole-v0</h3>
 
 <ul>
   <li><strong>Solved Criteria</strong>: avg. reward &gt;= 195 over 100 episodes.</li>
@@ -626,7 +626,7 @@ for position, velocity, etc. This means that states have already undergone dimen
 </div>
 <figcaption><strong>Table 1b.</strong> CartPole-v0 test stats. + = best model, * = general model (i.e.: resulted in a policy which solves all three problems), - = worst model.</figcaption>
 
-<h3 id="results-lunarlander-v2"><a class="toc_item" name="6"></a>Results: LunarLander-v2:</h3>
+<h3 id="results-lunarlander-v2"><a class="toc_item" name="6"></a>Results: LunarLander-v2</h3>
 
 <ul>
   <li><strong>Solved Criteria</strong>: avg. reward &gt;= 200 over 100 episodes.</li>
@@ -863,7 +863,7 @@ for position, velocity, etc. This means that states have already undergone dimen
 </div>
 <figcaption><strong>Table 1c.</strong> LunarLander-v2 test stats. + = best model, * = general model (i.e.: resulted in a policy which solves all three problems), - = worst model, ? = failed a run even though average falls within solved.</figcaption>
 
-<h3 id="results-mountaincar-v0"><a class="toc_item" name="7"></a>Results: MountainCar-v0:</h3>
+<h3 id="results-mountaincar-v0"><a class="toc_item" name="7"></a>Results: MountainCar-v0</h3>
 
 <ul>
   <li><strong>Solved Criteria</strong>: avg. reward &gt;= -110 over 100 episodes.</li>

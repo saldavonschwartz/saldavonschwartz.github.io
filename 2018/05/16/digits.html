@@ -76,7 +76,7 @@
   <li><strong><a href="#5">Deploying to iOS</a></strong></li>
 </ul>
 
-<h3 id="about"><a class="toc_item" name="1"></a>About:</h3>
+<h3 id="about"><a class="toc_item" name="1"></a>About</h3>
 
 <p>In this project I trained 2 and 3-layer FFN classifiers on the <a href="http://yann.lecun.com/exdb/mnist/">MNIST</a> dataset and deployed a final model in an iOS app as a practical example. The models were implemented and trained in Python with <a href="/2018/05/18/nnkit.html">NNKit</a> (a framework I developed to study neural networks) and the iOS example was done in Objective-C and C++.</p>
 
@@ -118,7 +118,7 @@
   </tr>
 </table>
 
-<h3 id="learning-mnist"><a class="toc_item" name="2"></a>Learning MNIST:</h3>
+<h3 id="learning-mnist"><a class="toc_item" name="2"></a>Learning MNIST</h3>
 <p>I trained different combinations of network topologies and batch sizes (Tables 1 and 2) on the whole MNIST train set and used the first half of the test set (5K examples) for validation, setting aside the other half for testing. At the end of each training epoch I measured validation accuracy and kept the five best checkpoints across all epochs based on this performance measure (Algorithm 1).</p>
 
 <div style="overflow-x: auto;">
@@ -296,7 +296,7 @@
   </tr>
 </table>
 
-<h3 id="testing-mnist"><a class="toc_item" name="3"></a>Testing MNIST:</h3>
+<h3 id="testing-mnist"><a class="toc_item" name="3"></a>Testing MNIST</h3>
 
 <p>Testing was done by running the remaining 5K examples in the test set as a whole batch thru each model and measuring accuracy in the same way as for validation. All models scored similarly around 99% (Table 4).</p>
 
@@ -406,7 +406,7 @@
 
 <figcaption><strong>Table 5.</strong> Testing results for 2 and 3-layer FFNs with raw features, from MNIST website.</figcaption>
 
-<h3 id="testing-custom-images"><a class="toc_item" name="4"></a>Testing Custom Images:</h3>
+<h3 id="testing-custom-images"><a class="toc_item" name="4"></a>Testing Custom Images</h3>
 
 <p>I also tested the models on photographs of handwritten digits taken with an iPhone to mimic the conditions under which the final model would perform. Before testing, the iPhone photographs were preprocessed following a similar approach to the one described in the MNIST website:</p>
 
@@ -430,7 +430,7 @@
 
 <p>By processing raw pixels in this way, model 5 correctly predicted all photographs and models 1 thru 4 correctly predicted all but one. Model 5 was also the smallest model, which made it more attractive for mobile deployment (2.2MB vs 7.3MB). So at this point I decided on model 5 for deployment.</p>
 
-<h3 id="deploying-to-ios"><a class="toc_item" name="5"></a>Deploying to iOS:</h3>
+<h3 id="deploying-to-ios"><a class="toc_item" name="5"></a>Deploying to iOS</h3>
 
 <p>I implemented an iOS app capable of taking photographs and running prediction on them. To import and run the trained model in the app, I re-implemented a forward-only subset of NNKit (originally written in Python) in C++.</p>
 

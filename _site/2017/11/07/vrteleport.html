@@ -62,7 +62,7 @@
 	<div class="inner">
 		<header class="major">
       <h1>VR Teleport</h1>
-      <h3>A C++ plugin for VR teleportation in Unreal Engine</h3>
+      <h3>A plugin for customizable VR locomotion in Unreal Engine</h3>
       <h5><a href=https://github.com/saldavonschwartz/VRTeleport class="button">github project</a></h5>
 		</header>
     <!--  -->
@@ -74,7 +74,7 @@
   <li><strong><a href="#3">Setup and Customization</a></strong></li>
 </ul>
 
-<h3 id="about"><a class="toc_item" name="1"></a>About:</h3>
+<h3 id="about"><a class="toc_item" name="1"></a>About</h3>
 
 <p>VRTeleportComponent is a C++ plugin for Unreal Engine that allows adding teleportation capabilities to any pawn in the context of VR. The plugin implements an engine component (<code class="highlighter-rouge">VRTeleportComponent</code>) which automatically takes care of a number of things involved in teleportation:</p>
 
@@ -115,7 +115,7 @@
   </tr>
 </table>
 
-<h3 id="architecture"><a class="toc_item" name="2"></a>Architecture:</h3>
+<h3 id="architecture"><a class="toc_item" name="2"></a>Architecture</h3>
 
 <p>The component can be thought of as a state machine with three states:</p>
 
@@ -146,7 +146,7 @@
 
 <p>Methods that trigger transitions can only execute on the server, to prevent clients in a multiplayer environment from cheating. Delegates however are dispatched to all replicated versions of a pawn. This is to avoid costly syncing between server and clients (such as when ray-tracing during probing). Instead, clients use their own resources while probing and teleporting and the server ultimately replicates the final position of the pawn to all clients.</p>
 
-<h3 id="setup-and-customization"><a class="toc_item" name="3"></a>Setup and Customization:</h3>
+<h3 id="setup-and-customization"><a class="toc_item" name="3"></a>Setup and Customization</h3>
 
 <p>A basic setup (as the one in Video 1) can be achieved in 4 steps:</p>
 

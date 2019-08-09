@@ -10,7 +10,7 @@ description: A physics-based endless scroller and RL environment
 [l2]: https://gym.openai.com/envs/BipedalWalker-v2/
 [l3]: https://gym.openai.com/envs/LunarLanderContinuous-v2/
 
-### <a class="toc_item" name="1"></a>About:
+### <a class="toc_item" name="1"></a>About
 
 Jumpy Cube started as a quick prototype ((i.e.: developed in one day) for an endless scroller type of game, targeting mobile devices. The game consists of a (partially) physics-based cube which must keep jumping and rolling forward and onto a series of tiles which are randomly generated as the game progresses.
 

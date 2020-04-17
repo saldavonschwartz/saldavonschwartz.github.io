@@ -62,7 +62,7 @@
 	<div class="inner">
 		<header class="major">
       <h1>Automatic Panoramas</h1>
-      <h3>Planar reprojection based on feature matching</h3>
+      <h3>Image registration based on automatic feature matching</h3>
       <h5><a href=https://github.com/saldavonschwartz/Panorama class="button">github project</a></h5>
 		</header>
     <!--  -->
@@ -79,7 +79,7 @@
 
 <h3 id="about"><a class="toc_item" name="1"></a>About</h3>
 
-<p>This project implements a pipeline for the automatic warping of images into panoramic compositions via planar reprojection based on feature matching. The project is based on the work by <a href="https://inst.eecs.berkeley.edu/~cs194-26/fa18/Papers/MOPS.pdf">Brown, Szeliski and Winder [1]</a>.</p>
+<p>This project implements a pipeline for the automatic stitching of images into panoramic compositions via reprojection of the images onto a common plane. In order to compute a homography to reproject the images, common features between pairs of images are detected and matched automatically. The project is an application of image registration and is based on the work by <a href="https://inst.eecs.berkeley.edu/~cs194-26/fa18/Papers/MOPS.pdf">Brown, Szeliski and Winder [1]</a>.</p>
 
 <!-- types:
 1:  local images.
@@ -423,13 +423,13 @@ for a number of times and the homography for the best candidate set is used to f
 <figcaption style="margin-top: -2.5em; margin-bottom: 2.5em;"><strong>Figure 11.</strong> After further outlier rejection with RANSAC, 9 consistent candidates remain. These are used to compute the final homography.</figcaption>
 
 <p>The homography <script type="math/tex">\mathbf{H}_{\scriptsize S2T}</script> maps source pixel locations <script type="math/tex">\mathbf{s}^{(i)}</script> to their corresponding target locations <script type="math/tex">\mathbf{t}^{(i)}</script>. That is, if <script type="math/tex">% <![CDATA[
-\hat{\mathbf{s}}^{(i)} = \begin{bmatrix}s_x&s_y&1\end{bmatrix} %]]></script> is a source pixel location in homogeneous coordinates, the homography is such that <script type="math/tex">\bar{\mathbf{t}}^{(i)} = \mathbf{H} \hat{\mathbf{s}}^{(i)}</script>, where <script type="math/tex">% <![CDATA[
-\bar{\mathbf{t}}^{(i)} = \begin{bmatrix}\bar{t_x}&\bar{t_y}&\bar{t_w}\end{bmatrix} %]]></script> and <script type="math/tex">% <![CDATA[
-\mathbf{t}^{(i)} = \begin{bmatrix}\frac{\bar{t_x}}{\bar{t_w}}&\frac{\bar{t_y}}{\bar{t_w}}\end{bmatrix} %]]></script> is the target in cartesian coordinates.</p>
+\hat{\mathbf{s}}^{(i)} = \begin{bmatrix}s_x&s_y&1\end{bmatrix}^T %]]></script> is a source pixel location in homogeneous coordinates, the homography is such that <script type="math/tex">\bar{\mathbf{t}}^{(i)} = \mathbf{H} \hat{\mathbf{s}}^{(i)}</script>, where <script type="math/tex">% <![CDATA[
+\bar{\mathbf{t}}^{(i)} = \begin{bmatrix}\bar{t_x}&\bar{t_y}&\bar{t_w}\end{bmatrix}^T %]]></script> and <script type="math/tex">% <![CDATA[
+\mathbf{t}^{(i)} = \begin{bmatrix}\frac{\bar{t_x}}{\bar{t_w}}&\frac{\bar{t_y}}{\bar{t_w}}\end{bmatrix}^T %]]></script> is the target in cartesian coordinates.</p>
 
-<p>A homography satisfying the above mapping (there’s many) can be recovered by formulating the search as a minimization problem <script type="math/tex">\text{argmin}_\mathbf{h}\ \lVert\mathbf{A}\mathbf{h} - \mathbf{b}\rVert^2_2</script> where <script type="math/tex">\mathbf{h}</script> represents the unknown parameters in <script type="math/tex">\mathbf{H}</script>.</p>
+<p>A homography satisfying the above equation can be recovered by formulating the search as a least squares approximation (i.e.: <script type="math/tex">\text{argmin}_\mathbf{h}\ \lVert\mathbf{A}\mathbf{h} - \mathbf{b}\rVert^2_2</script>), where <script type="math/tex">\mathbf{h}</script> represents the unknown parameters in <script type="math/tex">\mathbf{H}</script>.</p>
 
-<p>The constraints to this system of equations are essentially derived from wanting each component in a target point to match that of a source point transformed by the homography. At least 4 matching feature pairs are needed (8 constraints between x,y pairs) but the more the better:</p>
+<p>The constraints to this system of equations are essentially derived from wanting each component in a target point to match that of a source point transformed by the homography. At least 4 matching feature pairs are needed (each pair provides 2 constraints; there are 8 unknowns / DOF in H) but the more the better:</p>
 
 <ul>
   <li>
@@ -460,7 +460,7 @@ t_y\bar{t_w} - \bar{t_y} = 0 \Rightarrow\\
 
 <h3 id="image-warping"><a class="toc_item" name="5"></a>Image Warping</h3>
 
-<p>Once a good homography has been found, the source image’s 4 corners (the edges) are <em>forward warped</em> onto the target space in order to compute the extent of the final composite image and two empty images of this new size are created.</p>
+<p>Once a good homography has been found, the source image’s 4 corners are <em>forward warped</em> onto the target space in order to compute the extent of the final composite image and two empty images of this new size are created.</p>
 
 <p>The target image is copied to one of these images without warping (though accounting for its offset in the new image size). The source image is instead <em>inverse warped</em> in order to interpolate pixel values. First, all coordinates from target space are warped onto source space (via the inverse of <script type="math/tex">\mathbf{H}_{\scriptsize S2T} = \mathbf{H}_{\scriptsize T2S}</script>). Then, for all target coordinates which mapped to within the range of the original source image (i.e.: between (0,0) and (w, h) of the unmodified source), pixels in the other empty image are assigned values bilinearly interpolated from the source space values.</p>
 
@@ -500,7 +500,7 @@ t_y\bar{t_w} - \bar{t_y} = 0 \Rightarrow\\
 
 <h3 id="compositing"><a class="toc_item" name="6"></a>Compositing</h3>
 
-<p>Compositing is done by adding both final images, each multiplied by an alpha mask. The process is similar to linear interpolation of two images but instead each image has its own alpha mask with a nonlinear gradient applied only to the area where both images intersect.</p>
+<p>Compositing is done by adding both final images, each multiplied by an alpha mask. The process is similar to linear interpolation of two images but instead each image has its own alpha mask with a nonlinear gradient applied only to the area where both images intersect. The full process can then be repeated with another image pair consisting of the composited image and a new image.</p>
 
 <!-- types:
 1:  local images.

@@ -4,6 +4,7 @@ title: VR Teleport
 description: A plugin for customizable VR locomotion in Unreal Engine
 <!-- image: assets/images/pic05.jpg -->
 repo: https://github.com/saldavonschwartz/VRTeleport
+idx: 0
 ---
 <!-- Links: -->
 

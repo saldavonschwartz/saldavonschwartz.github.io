@@ -61,25 +61,22 @@
 <section id="one">
 	<div class="inner">
 		<header class="major">
-      <h1>VR Experiments</h1>
-      <h3>Exploring gaze + gyro as interfaces in VR</h3>
-      
+      <h1>Path Tracer</h1>
+      <h3></h3>
+      <h5><a href=https://github.com/saldavonschwartz/pathTracer class="button">github project</a></h5>
 		</header>
     <!--  -->
 		<p><!-- Links: -->
 
 <ul>
-  <li><strong><a href="#1">Polyworld</a></strong></li>
-  <li><strong><a href="#2">Revolve</a></strong></li>
+  <li><strong><a href="#1">About</a></strong></li>
 </ul>
 
-<h3 id="polyworld"><a class="toc_item" name="1"></a>Polyworld</h3>
+<h3 id="about"><a class="toc_item" name="1"></a>About</h3>
 
-<p>Polyworld is an experiment in gaze-only interaction targeting lower-end GLES2 cardboard devices. The idea was to explore the user could move fluidly inside a world with a device lacking positional tracking or input besides the Cardboard trigger.</p>
+<p>This is a <strong>work-in-progress</strong> implementation of a path tracer, largely based on Peter Shirley’s <em>Ray Tracing in One Weekend</em> series of tutorials plus other resources. It currently runs on MacOS and is CPU only. However the plan is to add CUDA support (perhaps Vulkan and/or Metal too) as well as to continue extending its features.</p>
 
-<p>I created the polygonal terrain along with a series of predefined Bezier paths in Blender. Then I imported these to Unity, where I implemented the gaze and movement logic along the predefined paths.</p>
-
-<p>The result is somewhat reminiscent of the locomotion mechanism in early CD-ROM games like <a href="https://en.wikipedia.org/wiki/The_7th_Guest">The 7th Guest</a>.</p>
+<p>A detailed writeup of the project will follow as I continue developing this project.</p>
 
 <!-- types:
 1:  local images.
@@ -94,12 +91,8 @@
     <td style="border: none; width: 100%;">
     <figure>
         
-        <div class="container">
-        <iframe src="https://www.youtube.com/embed/y5wmR1beHZc" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen=""></iframe>
-        </div>
+        <img style="width: 70%; height: auto;" src="http://localhost:4000/assets/images/pathTracer/spheresTest1.png" alt="" />
         
-        
-        <figcaption><strong>Polyworld.</strong> Google Cardboard, Unity.</figcaption>
         
     </figure>
     </td>
@@ -107,49 +100,14 @@
   </tr>
 </table>
 
-<h3 id="revolve"><a class="toc_item" name="2"></a>Revolve</h3>
+<figcaption style="margin-top: -2.5em; margin-bottom: 2.5em;"><strong>Figure 1.</strong> A test scene including Diffuse, Metallic and Dielectric materials, rendered using BVH (Bounding Volume Hierarchy) partitioning scheme.</figcaption>
 
-<p>Revolve is a game that works both in VR mode (Cardboard) and monoscopic mode. A spaceship cruises at constant acceleration thru a looping track and the player has to avoid colliding into rotating traps scattered along the way. The challenge in the game stems from the spaceship progressively speeding up and the traps rotating at different periods. There are two kinds of traps: green traps with quarter blocking segments and red traps with half blocking segments.</p>
-
-<p>In VR mode the player must steer the spaceship by slightly tilting their head (head roll equates to spaceship roll) while in mono mode the player tilts their phone instead.</p>
-
-<p>The project required a path following solution for the spaceship to stay on path and travel at arbitrary velocity. This was done as a two step process:</p>
-
-<ol>
-  <li>
-    <p>Implementing a Blender plugin in Python, which allowed me to create the track as a series of Bezier curves and export the control points.</p>
-  </li>
-  <li>
-    <p>Implementing a Unity component in C# to evaluate the path at arbitrary velocities. The evaluation approach was done according to this <a href="https://www.geometrictools.com/Documentation/MovingAlongCurveSpecifiedSpeed.pdf">paper</a>.</p>
-  </li>
-</ol>
-
-<!-- types:
-1:  local images.
-2: url to video.
-3: local mp4
--->
-
-<table>
-  <tr>
-    
-    
-    <td style="border: none; width: 100%;">
-    <figure>
-        
-        <div class="container">
-        <iframe src="https://www.youtube.com/embed/HGyhwvXYlCA" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen=""></iframe>
-        </div>
-        
-        
-        <figcaption><strong>Revolve.</strong> Google Cardboard, Unity.</figcaption>
-        
-    </figure>
-    </td>
-    
-  </tr>
-</table>
-
+<p><em>References</em></p>
+<ul>
+  <li><a href="https://raytracing.github.io">Peter Shirley - Ray Tracing in One Weekend</a></li>
+  <li><a href="https://cs184.eecs.berkeley.edu/sp20">UC Berkeley CS184 slides</a></li>
+  <li><a href="https://graphics.stanford.edu/courses/cs148-10-summer/docs/2006--degreve--reflection_refraction.pdf">Stanford CS148: Reflections and Refractions notes</a></li>
+</ul>
 </p>
 	</div>
 </section>

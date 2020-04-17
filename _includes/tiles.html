@@ -1,5 +1,5 @@
 <section id="one" class="tiles">
-	<!-- {% assign sorted = site.posts | sort:"idx" %} -->
+	<!-- {% assign sorti = site.posts | sort:"idx" %} -->
 	{% assign sorted = site.posts %}
 	{% for post in sorted limit:site.tiles-count %}
 	{% if site.tiles-source == 'posts' %}

@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Path Tracer
-description:
+description: A modern C++ path tracer
 <!-- image: assets/images/panorama/livingroom-anms-5.jpg -->
 repo: https://github.com/saldavonschwartz/pathTracer
 ---

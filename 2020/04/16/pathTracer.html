@@ -62,7 +62,7 @@
 	<div class="inner">
 		<header class="major">
       <h1>Path Tracer</h1>
-      <h3>A modern C++ path tracer</h3>
+      <h3>A GPU-accelerated path tracer</h3>
       <h5><a href=https://github.com/saldavonschwartz/pathTracer class="button">github project</a></h5>
 		</header>
     <!--  -->
@@ -74,7 +74,9 @@
 
 <h3 id="about"><a class="toc_item" name="1"></a>About</h3>
 
-<p>This is a <strong>work-in-progress</strong> implementation of a path tracer, largely based on Peter Shirley’s <em>Ray Tracing in One Weekend</em> series of tutorials plus other resources. It currently runs on MacOS and is CPU only. However the plan is to add CUDA support (perhaps Vulkan and/or Metal too) as well as to continue extending its features.</p>
+<p>This is a <strong>work-in-progress</strong> implementation of a path tracer, largely based on Peter Shirley’s <em>Ray Tracing in One Weekend</em> series of tutorials plus other resources.</p>
+
+<p>The current implementation features diffuse, metallic and dielectric materials and scene partitioning by bounding volume hierarchies. The project currently runs on MacOS (CPU-only) plus there’s an <em>in-progress</em> CUDA implementation for machines with NVIDIA GPUs running on Windows.</p>
 
 <p>A detailed writeup of the project will follow as I continue developing this project.</p>
 

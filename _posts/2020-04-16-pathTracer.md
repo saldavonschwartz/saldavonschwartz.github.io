@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Path Tracer
-description: A modern C++ path tracer
+description: A GPU-accelerated path tracer
 <!-- image: assets/images/panorama/livingroom-anms-5.jpg -->
 repo: https://github.com/saldavonschwartz/pathTracer
 ---
@@ -14,7 +14,9 @@ repo: https://github.com/saldavonschwartz/pathTracer
 
 ### <a class="toc_item" name="1"></a>About
 
-This is a **work-in-progress** implementation of a path tracer, largely based on Peter Shirley's *Ray Tracing in One Weekend* series of tutorials plus other resources. It currently runs on MacOS and is CPU only. However the plan is to add CUDA support (perhaps Vulkan and/or Metal too) as well as to continue extending its features.
+This is a **work-in-progress** implementation of a path tracer, largely based on Peter Shirley's *Ray Tracing in One Weekend* series of tutorials plus other resources.
+
+The current implementation features diffuse, metallic and dielectric materials and scene partitioning by bounding volume hierarchies. The project currently runs on MacOS (CPU-only) plus there's an *in-progress* CUDA implementation for machines with NVIDIA GPUs running on Windows. 
 
 A detailed writeup of the project will follow as I continue developing this project.
 

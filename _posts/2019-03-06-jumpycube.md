@@ -2,7 +2,7 @@
 layout: post
 title: Jumpy Cube
 description: A physics-based endless scroller and RL environment
-<!-- image: assets/images/pic05.jpg -->
+image: assets/images/jumpyCube/jumpyCube1.png
 idx: 2
 ---
 <!--  Links -->

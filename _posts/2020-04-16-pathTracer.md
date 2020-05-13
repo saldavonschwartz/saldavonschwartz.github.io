@@ -1,8 +1,8 @@
 ---
 layout: post
-title: Path Tracer
+title: CUDA Path Tracer
 description: A GPU-accelerated path tracer
-<!-- image: assets/images/panorama/livingroom-anms-5.jpg -->
+image: assets/images/pathTracer/test2.png
 repo: https://github.com/saldavonschwartz/pathTracer
 ---
 <!-- Links: -->
@@ -14,21 +14,32 @@ repo: https://github.com/saldavonschwartz/pathTracer
 
 ### <a class="toc_item" name="1"></a>About
 
-This is a **work-in-progress** implementation of a path tracer, largely based on Peter Shirley's *Ray Tracing in One Weekend* series of tutorials plus other resources.
-
-The current implementation features diffuse, metallic and dielectric materials and scene partitioning by bounding volume hierarchies. The project currently runs on MacOS (CPU-only) plus there's an *in-progress* CUDA implementation for machines with NVIDIA GPUs running on Windows. 
-
-A detailed writeup of the project will follow as I continue developing this project.
-
 {% include media.html
-  sources="pathTracer/spheresTest1.png"
-  types="1"
-  sizes="70%-auto"
+  sources="pathTracer/test1.png; pathTracer/test2.png"
+  types="1; 1"
+  sizes="100%-auto; 100%-auto"
   titles=""
   descriptions=""
   gtitle="Figure 1."
   gdescription="A test scene including Diffuse, Metallic and Dielectric materials, rendered using BVH (Bounding Volume Hierarchy) partitioning scheme."
 %}
+
+This is a **work-in-progress** CUDA implementation of a path tracer, largely based on Peter Shirley’s Ray Tracing in One Weekend series of tutorials plus other resources.
+
+Features currently implemented are:
+
+- Materials: Difuse, Metallic Dielectric and Emissive.
+- Area lights.
+- Bounding Volume Hierarchy (BVH) partitioning.
+- Depth of Field.
+- Geometry: spheres and planes.
+
+Future features will include:
+
+- Arbitrary geometry (i.e.: FBX, OBJ).
+- Probabilistic sampling.
+- Deep-Learing-based supersampling.
+
 
 *References*
 - [Peter Shirley - Ray Tracing in One Weekend][l1]

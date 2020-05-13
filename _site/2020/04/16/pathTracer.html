@@ -61,11 +61,11 @@
 <section id="one">
 	<div class="inner">
 		<header class="major">
-      <h1>Path Tracer</h1>
+      <h1>CUDA Path Tracer</h1>
       <h3>A GPU-accelerated path tracer</h3>
       <h5><a href=https://github.com/saldavonschwartz/pathTracer class="button">github project</a></h5>
 		</header>
-    <!--  -->
+    <!-- <span class="image fit"><img src="/assets/images/pathTracer/test2.png" alt="" /></span> -->
 		<p><!-- Links: -->
 
 <ul>
@@ -73,12 +73,6 @@
 </ul>
 
 <h3 id="about"><a class="toc_item" name="1"></a>About</h3>
-
-<p>This is a <strong>work-in-progress</strong> implementation of a path tracer, largely based on Peter Shirley’s <em>Ray Tracing in One Weekend</em> series of tutorials plus other resources.</p>
-
-<p>The current implementation features diffuse, metallic and dielectric materials and scene partitioning by bounding volume hierarchies. The project currently runs on MacOS (CPU-only) plus there’s an <em>in-progress</em> CUDA implementation for machines with NVIDIA GPUs running on Windows.</p>
-
-<p>A detailed writeup of the project will follow as I continue developing this project.</p>
 
 <!-- types:
 1:  local images.
@@ -90,10 +84,20 @@
   <tr>
     
     
-    <td style="border: none; width: 100%;">
+    <td style="border: none; width: 50%;">
     <figure>
         
-        <img style="width: 70%; height: auto;" src="/assets/images/pathTracer/spheresTest1.png" alt="" />
+        <img style="width: 100%; height: auto;" src="/assets/images/pathTracer/test1.png" alt="" />
+        
+        
+    </figure>
+    </td>
+    
+    
+    <td style="border: none; width: 50%;">
+    <figure>
+        
+        <img style="width: 100%; height: auto;" src="/assets/images/pathTracer/test2.png" alt="" />
         
         
     </figure>
@@ -103,6 +107,26 @@
 </table>
 
 <figcaption style="margin-top: -2.5em; margin-bottom: 2.5em;"><strong>Figure 1.</strong> A test scene including Diffuse, Metallic and Dielectric materials, rendered using BVH (Bounding Volume Hierarchy) partitioning scheme.</figcaption>
+
+<p>This is a <strong>work-in-progress</strong> CUDA implementation of a path tracer, largely based on Peter Shirley’s Ray Tracing in One Weekend series of tutorials plus other resources.</p>
+
+<p>Features currently implemented are:</p>
+
+<ul>
+  <li>Materials: Difuse, Metallic Dielectric and Emissive.</li>
+  <li>Area lights.</li>
+  <li>Bounding Volume Hierarchy (BVH) partitioning.</li>
+  <li>Depth of Field.</li>
+  <li>Geometry: spheres and planes.</li>
+</ul>
+
+<p>Future features will include:</p>
+
+<ul>
+  <li>Arbitrary geometry (i.e.: FBX, OBJ).</li>
+  <li>Probabilistic sampling.</li>
+  <li>Deep-Learing-based supersampling.</li>
+</ul>
 
 <p><em>References</em></p>
 <ul>
@@ -136,7 +160,7 @@
 				
 			</ul>
 			<ul class="copyright">
-				<li>&copy; 2018 Federico Saldarini. All rights reserved.</li>
+				<li>&copy; 2020 Federico Saldarini. All rights reserved.</li>
 				<li>Based on Forty theme by <a href="https://html5up.net" target="_blank">HTML5 UP</a></li>
 			</ul>
 		</div>

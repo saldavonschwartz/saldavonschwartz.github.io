@@ -15,11 +15,11 @@ repo: https://github.com/saldavonschwartz/pathTracer
 ### <a class="toc_item" name="1"></a>About
 
 {% include media.html
-  sources="pathTracer/test1.png; pathTracer/test2.png"
+  sources="pathTracer/test2.png; pathTracer/test1.png"
   types="1; 1"
   sizes="100%-auto; 100%-auto"
   titles="Figure 1a.; Figure 1b"
-  descriptions="Rendering of Diffuse, Metallic and Dielectric materials.; The same scene replacing Diffuse with Emissive spheres."
+  descriptions="Rendering of Diffuse, Metallic and Emissive materials.; The same scene replacing Emissive with Diffuse spheres."
   gtitle=""
   gdescription=""
 %}

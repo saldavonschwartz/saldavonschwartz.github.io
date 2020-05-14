@@ -90,6 +90,8 @@
         <img style="width: 100%; height: auto;" src="/assets/images/pathTracer/test1.png" alt="" />
         
         
+        <figcaption><strong>Figure 1a.</strong> Rendering of Diffuse, Metallic and Dielectric materials.</figcaption>
+        
     </figure>
     </td>
     
@@ -100,15 +102,41 @@
         <img style="width: 100%; height: auto;" src="/assets/images/pathTracer/test2.png" alt="" />
         
         
+        <figcaption><strong>Figure 1b</strong> The same scene replacing Diffuse with Emissive spheres.</figcaption>
+        
     </figure>
     </td>
     
   </tr>
 </table>
 
-<figcaption style="margin-top: -2.5em; margin-bottom: 2.5em;"><strong>Figure 1.</strong> A test scene including Diffuse, Metallic and Dielectric materials, rendered using BVH (Bounding Volume Hierarchy) partitioning scheme.</figcaption>
+<figcaption style="margin-top: -2.5em; margin-bottom: 2.5em;"><strong></strong> </figcaption>
 
-<p>This is a <strong>work-in-progress</strong> CUDA implementation of a path tracer, largely based on Peter Shirley’s Ray Tracing in One Weekend series of tutorials plus other resources.</p>
+<!-- types:
+1:  local images.
+2: url to video.
+3: local mp4
+-->
+
+<table>
+  <tr>
+    
+    
+    <td style="border: none; width: 100%;">
+    <figure>
+        
+        <img style="width: 80%; height: auto;" src="/assets/images/pathTracer/rayKernel2.svg" alt="" />
+        
+        
+    </figure>
+    </td>
+    
+  </tr>
+</table>
+
+<figcaption style="margin-top: -2.5em; margin-bottom: 2.5em;"><strong>Figure 2.</strong> Render kernel (one per pixel). On each invocation, the camera casts <code>raysPerPixel</code> rays with random offsets from the pixel center and samples the scene up to <code>maxBounces</code> per ray. A pixel's color is the average of these samples.</figcaption>
+
+<p>This is an <strong>ongoing</strong> CUDA implementation of a path tracer, largely based on Peter Shirley’s <em>Ray Tracing in One Weekend</em> series of tutorials plus other resources.</p>
 
 <p>Features currently implemented are:</p>
 

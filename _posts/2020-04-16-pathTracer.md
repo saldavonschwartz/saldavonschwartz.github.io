@@ -18,13 +18,23 @@ repo: https://github.com/saldavonschwartz/pathTracer
   sources="pathTracer/test1.png; pathTracer/test2.png"
   types="1; 1"
   sizes="100%-auto; 100%-auto"
-  titles=""
-  descriptions=""
-  gtitle="Figure 1."
-  gdescription="A test scene including Diffuse, Metallic and Dielectric materials, rendered using BVH (Bounding Volume Hierarchy) partitioning scheme."
+  titles="Figure 1a.; Figure 1b"
+  descriptions="Rendering of Diffuse, Metallic and Dielectric materials.; The same scene replacing Diffuse with Emissive spheres."
+  gtitle=""
+  gdescription=""
 %}
 
-This is a **work-in-progress** CUDA implementation of a path tracer, largely based on Peter Shirley’s Ray Tracing in One Weekend series of tutorials plus other resources.
+{% include media.html
+  sources="pathTracer/rayKernel2.svg"
+  types="1"
+  sizes="80%-auto"
+  titles=""
+  descriptions=""
+  gtitle="Figure 2."
+  gdescription="Render kernel (one per pixel). On each invocation, the camera casts <code>raysPerPixel</code> rays with random offsets from the pixel center and samples the scene up to <code>maxBounces</code> per ray. A pixel's color is the average of these samples."
+%}
+
+This is an **ongoing** CUDA implementation of a path tracer, largely based on Peter Shirley’s *Ray Tracing in One Weekend* series of tutorials plus other resources.
 
 Features currently implemented are:
 
@@ -39,7 +49,6 @@ Future features will include:
 - Arbitrary geometry (i.e.: FBX, OBJ).
 - Probabilistic sampling.
 - Deep-Learing-based supersampling.
-
 
 *References*
 - [Peter Shirley - Ray Tracing in One Weekend][l1]

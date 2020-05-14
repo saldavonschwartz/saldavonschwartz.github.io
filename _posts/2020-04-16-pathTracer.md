@@ -15,11 +15,11 @@ repo: https://github.com/saldavonschwartz/pathTracer
 ### <a class="toc_item" name="1"></a>About
 
 {% include media.html
-  sources="pathTracer/test2.png; pathTracer/test1.png"
+  sources="pathTracer/test1.png; pathTracer/test2.png"
   types="1; 1"
   sizes="100%-auto; 100%-auto"
   titles="Figure 1a.; Figure 1b"
-  descriptions="Rendering of Diffuse, Metallic and Emissive materials.; The same scene replacing Emissive with Diffuse spheres."
+  descriptions="Rendering of diffuse, metallic and dielectric materials.; The same scene replacing diffuse with emissive spheres."
   gtitle=""
   gdescription=""
 %}
@@ -38,7 +38,7 @@ This is an **ongoing** CUDA implementation of a path tracer, largely based on Pe
 
 Features currently implemented are:
 
-- Materials: Difuse, Metallic Dielectric and Emissive.
+- Materials: diffuse, metallic dielectric and emissive.
 - Area lights.
 - Bounding Volume Hierarchy (BVH) partitioning.
 - Depth of Field.
